@@ -55,18 +55,16 @@ function getNeighbors(node) {
     return neighbors;
 }
 
-const ruta = document.querySelector('#Ruta');
-const arbol = document.querySelector('#Frontera');
-
-function addToFrontera(parent, neighbors, depth) {
+function addToFrontera(parent, neighbors) {
     const fronteraContainer = document.getElementById('Frontera');
 
+    // Crear la columna para el nodo padre, si es el inicio se muestra con "-"
     const parentColumn = document.createElement('div');
     parentColumn.classList.add('table-column');
 
     const parentCostCell = document.createElement('div');
     parentCostCell.classList.add('table-cell');
-    parentCostCell.innerText = parent ? depth : 0;  // Profundidad como costo
+    parentCostCell.innerText = "-";
 
     const separatorCell = document.createElement('div');
     separatorCell.classList.add('table-cell');
@@ -87,7 +85,7 @@ function addToFrontera(parent, neighbors, depth) {
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p>${depth} + 1</p><p><b>${depth + 1}</b></p>`;
+        costCell.innerHTML = `<p>-</p>`;
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
@@ -123,7 +121,9 @@ function updateExplorados(closedSet) {
 
 function reconstructPath(current) {
     let delay = 0;
+    const ruta = document.querySelector('#Ruta');
     ruta.innerHTML = '';
+
     while (current) {
         const node = current;
         setTimeout(() => {
@@ -141,47 +141,44 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function breadthFirstSearch(start, goal) {
-    const openSet = [start];
-    const closedSet = [];
-    let depth = 0;
+async function bfs(start, goal) {
+    let openSet = [start];
+    let closedSet = [];
 
     while (openSet.length > 0) {
-        const current = openSet.shift();
-        closedSet.push(current);
+        let current = openSet.shift(); // Se toma el primer nodo (FIFO)
 
         updateNodoActual(current);
-        updateExplorados(closedSet);
+        addToFrontera(current, getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall));
+        await delay(timeExecute);
 
         if (current === goal) {
             reconstructPath(current);
-            return true;
+            return;
         }
 
-        const neighbors = getNeighbors(current).filter(neighbor => !neighbor.isWall && !closedSet.includes(neighbor));
+        closedSet.push(current);
+        current.element.classList.remove('open');
+        current.element.classList.add('closed');
+        updateExplorados(closedSet);
 
-        neighbors.forEach(neighbor => {
+        let neighbors = getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall);
+        for (const neighbor of neighbors) {
             if (!openSet.includes(neighbor)) {
                 neighbor.parent = current;
                 openSet.push(neighbor);
+                neighbor.element.classList.add('open');
+                await delay(timeExecute);
             }
-        });
-
-        addToFrontera(current, neighbors, depth);
-        await delay(timeExecute);
-
-        depth++;
+        }
     }
-
-    console.log("No se encontró una ruta.");
-    return false;
 }
 
 createGrid();
 
 const btnEmpezar = document.querySelector('#iniciar');
 btnEmpezar.addEventListener('click', () => {
-    breadthFirstSearch(start, goal);
+    bfs(start, goal);
     btnEmpezar.disabled = true;
 });
 

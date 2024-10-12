@@ -8,6 +8,7 @@ body {
 .body_busqueda {
     align-items: center;
     font-size: 1.1vw;
+    width: 90%;
     margin: 0;
     row-gap: 2vw;
     column-gap: 2.5vw;
@@ -36,6 +37,7 @@ body {
     padding: 10px;
     /* width: 100%; */
     text-align: center;
+    font-size: 90%;
 }
 
 #campoCuadro {
@@ -189,6 +191,7 @@ body {
     flex-wrap: wrap-reverse;
     flex-direction: row-reverse;
     gap: 10px;
+    height: 40px;
 }
 
 #Nodo p {

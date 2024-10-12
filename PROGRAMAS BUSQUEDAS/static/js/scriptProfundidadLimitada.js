@@ -4,7 +4,7 @@ const sizeCell = 65;
 const grid = [];
 const timeExecute = 100;
 let start, goal;
-const depthLimit = 10; // Profundidad máxima
+let maxDepth = 8; // Nivel hasta donde puede llegar la búsqueda
 
 function createGrid() {
     const gridElement = document.getElementById('grid');
@@ -21,8 +21,12 @@ function createGrid() {
             const cell = {
                 x: i,
                 y: j,
+                f: 0,
+                g: 0, // Distancia acumulada desde el inicio
+                h: 0, // Heurística
                 isWall: false,
                 parent: null,
+                depth: 0, // Profundidad actual
                 element: cellElement
             };
             grid[i][j] = cell;
@@ -67,7 +71,7 @@ function addToFrontera(parent, neighbors) {
 
     const parentCostCell = document.createElement('div');
     parentCostCell.classList.add('table-cell');
-    parentCostCell.innerText = parent ? 'n/a' : 0;
+    parentCostCell.innerText = parent ? parent.g : 0;
 
     const separatorCell = document.createElement('div');
     separatorCell.classList.add('table-cell');
@@ -83,12 +87,14 @@ function addToFrontera(parent, neighbors) {
     fronteraContainer.appendChild(parentColumn);
 
     neighbors.forEach(neighbor => {
+        // Establecer el costo del vecino
+        neighbor.g = parent.g + 1; // Costo acumulado desde el inicio
         const neighborColumn = document.createElement('div');
         neighborColumn.classList.add('table-column');
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p>-</p><p><b>-</b></p>`;
+        costCell.innerHTML = `<p><b>${neighbor.g}</b></p>`; // Muestra el costo acumulado
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
@@ -105,6 +111,7 @@ function addToFrontera(parent, neighbors) {
         fronteraContainer.appendChild(neighborColumn);
     });
 }
+
 
 function updateNodoActual(current) {
     const nodoElement = document.getElementById('Nodo');
@@ -143,34 +150,44 @@ function delay(ms) {
 }
 
 async function depthLimitedSearch(node, goal, depth) {
-    if (depth === 0) return false;
-    if (node === goal) {
-        reconstructPath(node);
-        return true;
-    }
+    let closedSet = [];
 
-    updateNodoActual(node);
-    addToFrontera(node, getNeighbors(node));
-    await delay(timeExecute);
+    async function dfs(current, depth) {
+        if (depth > maxDepth) {
+            return false;
+        }
 
-    const neighbors = getNeighbors(node).filter(neighbor => !neighbor.isWall);
+        updateNodoActual(current);
+        addToFrontera(current, getNeighbors(current));
+        await delay(timeExecute);
 
-    for (const neighbor of neighbors) {
-        if (neighbor.parent === null) {
-            neighbor.parent = node;
-            const found = await depthLimitedSearch(neighbor, goal, depth - 1);
+        if (current === goal) {
+            reconstructPath(current);
+            return true;
+        }
+
+        closedSet.push(current);
+        current.element.classList.add('closed');
+        updateExplorados(closedSet);
+
+        const neighbors = getNeighbors(current).filter(neighbor => !neighbor.isWall && !closedSet.includes(neighbor));
+
+        for (const neighbor of neighbors) {
+            neighbor.parent = current;
+            neighbor.depth = current.depth + 1;
+
+            const found = await dfs(neighbor, depth + 1);
             if (found) return true;
         }
+
+        return false;
     }
 
-    return false;
-}
+    const found = await dfs(node, 0);
 
-async function dls(start, goal) {
-    const closedSet = [];
-    const found = await depthLimitedSearch(start, goal, depthLimit);
     if (!found) {
-        console.log("No se encontró solución dentro del límite de profundidad.");
+        ruta.innerHTML = '<span>No se encontró solución</span>';
+        arbol.innerHTML += '<span>No se encontró solución</span>';
     }
 }
 
@@ -178,7 +195,7 @@ createGrid();
 
 const btnEmpezar = document.querySelector('#iniciar');
 btnEmpezar.addEventListener('click', () => {
-    dls(start, goal);
+    depthLimitedSearch(start, goal, 0);
     btnEmpezar.disabled = true;
 });
 

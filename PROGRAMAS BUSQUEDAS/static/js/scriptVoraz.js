@@ -89,7 +89,7 @@ function addToFrontera(parent, neighbors) {
 
         const heuristicCell = document.createElement('div');
         heuristicCell.classList.add('table-cell');
-        heuristicCell.innerHTML = `<p>${heuristic(neighbor, goal)}</p>`;
+        heuristicCell.innerHTML = `<p><b>${heuristic(neighbor, goal)}</b></p>`;
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
