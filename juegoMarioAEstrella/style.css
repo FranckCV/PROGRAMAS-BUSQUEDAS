@@ -1,0 +1,257 @@
+:root {
+    --sizeCell: 35px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #19161d;
+    font-size: 1.1vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.body_busqueda {
+    align-items: center;
+    padding-inline: 1vw;
+    margin: 0;
+    column-gap: 1.5vw;
+    row-gap: 2vw;
+    display: grid;
+    justify-items: center;
+    grid-template-columns: auto 20vw 30vw;
+    grid-template-areas:
+        "tabla nodo control"
+        "tabla texto texto"    
+        "tabla explorados explorados"
+        "front explorados explorados"
+        "front explorados explorados"
+        ;
+}
+
+#campoGrid {
+    grid-area: tabla;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    align-items: center;
+}
+
+#grid {    
+    display: grid;
+}
+
+.cell {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-image: url('img/piso.png');
+    background-size: cover;
+}
+
+.cell p {
+    margin: 2px;
+    font-size: 80%;
+}
+
+.start {
+    background-color: green;
+    background-image: url('img/mario.png');
+    background-size: cover;
+}
+
+.goal {
+    background-color: red;
+    background-image: url('img/bloque.png');
+    background-size: cover;
+}
+
+.wall {
+    background-image: url('img/muro.png');
+    background-size: cover;
+    /* background-color: black; */
+    color: white;
+}
+
+.open {
+    /* background-color: lightgreen; */
+    background-image: url('img/mario.png');
+    background-size: cover;
+}
+
+.closed {
+    color: white;
+    background-color: #b1482e;
+}
+
+.path {
+    background-color: yellow;
+}
+
+/* RUTA */
+
+#campoRuta {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    grid-area: texto;
+}
+
+#Ruta {
+    color: white;
+    display: flex;
+    flex-wrap: wrap-reverse;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 10px;
+}
+
+#Ruta p {
+    background-color: #1f1f72;
+    padding: 10px;
+    margin: 0;
+    border-radius: 100%;
+}
+
+/* NODOS EXPLORADOS */
+
+#campoExplorados {
+    align-self: flex-start;
+    grid-area: explorados;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#Explorados {
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#Explorados p {
+    padding: 10px;
+    margin: 0;
+    text-align: center;
+    align-items: center;
+    background-image: url('img/piso.png');
+    background-size: cover;
+    height: var(--sizeCell);
+    width: var(--sizeCell);
+}
+
+.tittle{
+    color:white;
+}
+
+/* NODO */
+
+#campoNodo {
+    /* align-self: flex-start; */
+    grid-area: nodo;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#Nodo {
+    background-image: url('img/mario.png');
+    background-size: cover;
+    height: var(--sizeCell);
+    width: var(--sizeCell);
+}
+
+#Nodo p {
+    padding: 10px;
+    margin: 0;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* color: black; */
+}
+
+/* FRONTERA */
+
+#campoFrontera {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#Frontera {
+    color: white;
+    grid-area: front;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px; 
+    /* max-width: 100%; */
+    overflow-x: auto;
+}
+
+.table-column {
+    display: grid;
+    /* flex-direction: column; */
+    grid-template-rows: 1.7fr 1fr 1fr;
+    /* align-items: center; */
+    border: 2px solid rgb(255, 255, 255); 
+    background-color: #333; 
+    padding: 2px;
+    gap: 2px;
+}
+
+.table-cell {
+    /* border: 1px solid rgb(255, 255, 255);  */
+    padding: 5px;
+    color: #333;
+    background-color: white; 
+    text-align: center;
+    align-self: center;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* border-bottom: 1px solid #444; */
+}
+
+.table-cell p {
+    margin: 0;
+    padding: 0;
+}
+
+/* BOTONES */
+
+#controles {
+    grid-area: control;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#reiniciar,
+#iniciar {
+    color: white;
+    border: 0;
+    padding: 15px;
+    border-radius: 20px;
+}
+
+#reiniciar {
+    background-color: #4c94f3;
+}
+
+#iniciar {
+    background-color: #56df34;
+}
+
