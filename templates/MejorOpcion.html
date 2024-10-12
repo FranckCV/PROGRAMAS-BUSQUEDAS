@@ -1,0 +1,31 @@
+{% extends "maestra.html" %}
+
+{% block titulo %} 
+    Mejor Opcion
+{% endblock %}
+
+{% block estilos %}
+    <style>
+        body {
+            background-color: #384920;
+        }
+    </style>
+{% endblock %}
+
+{% block texto %} 
+    La búsqueda de mejor opción, a menudo referida como 
+    búsqueda informada, es un algoritmo que se basa en una
+    heurística para elegir el nodo más prometedor a explorar 
+    en cada paso. A diferencia de la búsqueda voraz, que solo 
+    considera la heurística, la búsqueda de mejor opción puede 
+    tener en cuenta también el costo acumulado. Esto permite que 
+    el algoritmo tome decisiones más fundamentadas sobre qué camino 
+    seguir, con el objetivo de encontrar soluciones óptimas de 
+    manera más eficiente. Sin embargo, al igual que la búsqueda 
+    voraz, no siempre garantiza la optimalidad, dependiendo de 
+    la heurística utilizada.
+{% endblock %}
+
+{% block scripts %} 
+    <script src="static/js/scriptMejorOpcion.js"></script>
+{% endblock %}

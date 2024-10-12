@@ -1,0 +1,26 @@
+{% extends "maestra.html" %}
+
+{% block titulo %} 
+    A * 
+{% endblock %}
+
+{% block texto %}
+    Se combina el coste acumulado desde el nodo inicial 
+    con una heurística que estima el coste hasta el objetivo, utilizando 
+    la función f(n) = g(n) + h(n). Este enfoque garantiza encontrar el 
+    camino más corto si la heurística es admisible y es eficiente al 
+    priorizar nodos, lo que lo convierte en una opción popular en 
+    aplicaciones de búsqueda de rutas y juegos.
+{% endblock %} 
+
+{% block estilos %}
+    <style>
+        body {
+            background-color: #202130;
+        }
+    </style>
+{% endblock %}
+
+{% block scripts %} 
+    <script src="static/js/scriptAestrella.js"></script>
+{% endblock %}
