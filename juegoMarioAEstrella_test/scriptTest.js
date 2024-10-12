@@ -1,15 +1,10 @@
-const cols = 10;
-const rows = 10;
-const sizeCell = 60;
+const cols = 15;
+const rows = 5;
+const sizeCell = 65;
 const grid = [];
 const timeExecute = 75;
 const nivelDificultad = 25;
-const enemies = ["muro", "hongo", "tortuga"];
 let start, goal;
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
 
 function createGrid() {
     const gridElement = document.getElementById('grid');
@@ -26,9 +21,9 @@ function createGrid() {
             const cell = {
                 x: i,
                 y: j,
-                f: 0,
-                g: 0, // Distancia acumulada desde el inicio
-                h: 0, // Heurística (distancia Manhattan hasta el objetivo)
+                f: Infinity, // f inicial debe ser infinito para que la primera comparación siempre sea menor
+                g: Infinity, // g inicial debe ser infinito para evitar que los valores se sumen incorrectamente
+                h: 0,
                 isWall: false,
                 parent: null,
                 element: cellElement
@@ -36,7 +31,8 @@ function createGrid() {
             grid[i][j] = cell;
             cellElement.innerHTML = `<span>${i},${j}</span>`;
 
-            if (i === 0 && j === 0) {
+            // Definir la celda de inicio y la meta
+            if (i === rows - 1 && j === 0) {
                 start = cell;
                 cellElement.classList.add('start');
             } else if (i === rows - 1 && j === cols - 1) {
@@ -44,11 +40,10 @@ function createGrid() {
                 cellElement.classList.add('goal');
             }
 
+            // Generar muros aleatorios en base a nivelDificultad
             if (Math.random() < nivelDificultad / 100 && cell !== start && cell !== goal) {
                 cell.isWall = true;
                 cellElement.classList.add('wall');
-                var indiceAleatorio = Math.floor(Math.random() * enemies.length);
-                cellElement.classList.add(enemies[indiceAleatorio]);
             }
         }
     }
@@ -72,7 +67,7 @@ const arbol = document.querySelector('#Frontera');
 function addToFrontera(parent, neighbors) {
     const fronteraContainer = document.getElementById('Frontera');
 
-    // Crear la columna para el nodo padre, si es el inicio se muestra con "-"
+    // Crear la columna para el nodo padre
     const parentColumn = document.createElement('div');
     parentColumn.classList.add('table-column');
 
@@ -96,10 +91,22 @@ function addToFrontera(parent, neighbors) {
     neighbors.forEach(neighbor => {
         const neighborColumn = document.createElement('div');
         neighborColumn.classList.add('table-column');
+        
+        // var valorG = 0;
+
+        // if (neighbor.g == Infinity) {
+        //     valorG = 0;
+        // } else {
+        //     valorG == neighbor.g;
+        // }
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p>${parent.g} + 1</p><p><b>${parent.g + 1}</b></p>`;
+        costCell.innerHTML = `
+            <p>g(n): ${neighbor.g}</p>
+            <p>h(n): ${neighbor.h}</p>
+            <p><b>f(n): ${neighbor.g + neighbor.h}</b></p>
+        `;
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
@@ -157,7 +164,7 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function aStarSearch(start, goal) {
+async function busqueda_Aestrella(start, goal) {
     let openSet = [start];
     let closedSet = [];
 
@@ -206,25 +213,14 @@ async function aStarSearch(start, goal) {
 
 createGrid();
 
-// const cells = document.querySelectorAll('.cell');
-// cells.forEach(cell => {
-//     cell.addEventListener('click',() => { 
-//         if (cell.classList.contains('wall')) {
-//             cell.isWall = false;
-//             cell.classList.remove('wall');
-//         } else {
-//             cell.isWall = true;
-//             cell.classList.add('wall');
-//         }
-//     });
-// });
-
+// Botón para iniciar la búsqueda
 const btnEmpezar = document.querySelector('#iniciar');
 btnEmpezar.addEventListener('click', () => {
-    aStarSearch(start, goal);
+    busqueda_Aestrella(start, goal);
     btnEmpezar.disabled = true;
 });
 
+// Botón para reiniciar
 document.querySelector('#reiniciar').addEventListener('click', () => {
     location.reload();
 });

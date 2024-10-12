@@ -1,15 +1,10 @@
-const cols = 10;
-const rows = 10;
+const cols = 15;
+const rows = 7;
 const sizeCell = 60;
 const grid = [];
 const timeExecute = 75;
 const nivelDificultad = 25;
-const enemies = ["muro", "hongo", "tortuga"];
 let start, goal;
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
 
 function createGrid() {
     const gridElement = document.getElementById('grid');
@@ -36,7 +31,7 @@ function createGrid() {
             grid[i][j] = cell;
             cellElement.innerHTML = `<span>${i},${j}</span>`;
 
-            if (i === 0 && j === 0) {
+            if (i === rows - 1 && j === 0) {
                 start = cell;
                 cellElement.classList.add('start');
             } else if (i === rows - 1 && j === cols - 1) {
@@ -47,8 +42,6 @@ function createGrid() {
             if (Math.random() < nivelDificultad / 100 && cell !== start && cell !== goal) {
                 cell.isWall = true;
                 cellElement.classList.add('wall');
-                var indiceAleatorio = Math.floor(Math.random() * enemies.length);
-                cellElement.classList.add(enemies[indiceAleatorio]);
             }
         }
     }
