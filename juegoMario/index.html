@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego estilo Mario Bros</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: green;
+            /* display: grid; */
+            /* grid-template-rows: 4fr 1fr; */
+        }
+
+        .container {
+            position: relative;
+            /* width: 100vw; */
+            height: 90vh;
+            background-color: lightblue;
+            display: flex;
+            align-items: flex-end; /* El personaje empezará desde abajo */
+        }
+
+        .character {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            bottom: 0;
+        }
+
+        /* .ground { */
+            /* width: 100%; */
+            /* height: 50px; */
+            /* position: absolute; */
+            /* bottom: 0; */
+        /* } */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="character" id="character"></div>
+    </div>
+    <!-- <div class="ground"></div> -->
+    <script>
+        const character = document.getElementById('character');
+        const moveSpeed = 10; // Velocidad de movimiento
+        const jumpHeight = 150; // Altura del salto
+        const gravity = 5; // Gravedad (para caer)
+
+        let isJumping = false;
+        let positionX = 0; // Posición horizontal del personaje
+        let positionY = 0; // Posición vertical (para saltar)
+
+        document.addEventListener('keydown', (e) => {
+            // Movimiento a la izquierda
+            if (e.key === 'a' || e.key === 'ArrowLeft') {
+                positionX -= moveSpeed;
+                character.style.left = `${positionX}px`;
+            }
+
+            // Movimiento a la derecha
+            if (e.key === 'd' || e.key === 'ArrowRight') {
+                positionX += moveSpeed;
+                character.style.left = `${positionX}px`;
+            }
+
+            // Salto (barra espaciadora)
+            if (e.key === ' ' && !isJumping) {
+                isJumping = true;
+                let jumpUp = setInterval(() => {
+                    if (positionY >= jumpHeight) {
+                        clearInterval(jumpUp);
+
+                        // Descender
+                        let fallDown = setInterval(() => {
+                            if (positionY <= 0) {
+                                clearInterval(fallDown);
+                                isJumping = false;
+                            } else {
+                                positionY -= gravity;
+                                character.style.bottom = `${positionY}px`;
+                            }
+                        }, 20);
+                    } else {
+                        positionY += gravity;
+                        character.style.bottom = `${positionY}px`;
+                    }
+                }, 20);
+            }
+        });
+    </script>
+</body>
+</html>
+
