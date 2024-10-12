@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Superposición de Imágenes</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            position: relative; /* Posiciona el contenedor como relativo para que los hijos se posicionen en relación a él */
+            width: 500px; /* Ancho del contenedor */
+            height: 500px; /* Alto del contenedor */
+            overflow: hidden; /* Oculta cualquier contenido que desborde el contenedor */
+        }
+
+        .imagen-fondo {
+            position: absolute; /* Posiciona la imagen de fondo */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('img/piso.png'); /* Ruta a la imagen de fondo */
+            background-size: cover; /* Asegura que la imagen cubra todo el contenedor */
+            background-position: center; /* Centra la imagen de fondo */
+            z-index: 1; /* Coloca esta capa por debajo */
+        }
+
+        .imagen-superpuesta {
+            position: absolute; /* Posiciona la imagen superpuesta */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('img/mario.png'); /* Ruta a la imagen superpuesta */
+            background-size: contain; /* Ajusta la imagen superpuesta al tamaño del contenedor */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            background-position: center; /* Centra la imagen superpuesta */
+            z-index: 2; /* Coloca esta capa por encima */
+            opacity: 0.8; /* Ajusta la opacidad si es necesario */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="imagen-fondo"></div>
+        <div class="imagen-superpuesta"></div>
+    </div>
+</body>
+</html>

@@ -28,7 +28,7 @@ function createGrid() {
                 element: cellElement
             };
             grid[i][j] = cell;
-            cellElement.innerHTML = `<span>${i},${j}</span>`;
+            // cellElement.innerHTML = `<span>${i},${j}</span>`;
 
             if (i === 0 && j === 0) {
                 start = cell;

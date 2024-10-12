@@ -12,20 +12,27 @@ body {
 }
 
 .body_busqueda {
-    align-items: center;
-    padding-inline: 1vw;
+    align-items: flex-start;
+    padding-inline: 1.2vw;
+    padding-block: 0.5vw;
     margin: 0;
     column-gap: 1.5vw;
     row-gap: 2vw;
     display: grid;
-    justify-items: center;
+    justify-items: flex-start;
     grid-template-columns: auto 20vw 30vw;
-    grid-template-areas:
+    /* grid-template-areas:
         "tabla nodo control"
         "tabla texto texto"    
         "tabla explorados explorados"
         "front explorados explorados"
         "front explorados explorados"
+        ; */
+    grid-template-areas:
+        "tabla nodo control"
+        "tabla front front"    
+        "texto front front"
+        "explorados front front"
         ;
 }
 
@@ -42,7 +49,7 @@ body {
 }
 
 .cell {
-    background-color: #eee;
+    /* background-color: #eee; */
     border: 1px solid #ccc;
     text-align: center;
     transition: background-color 0.3s ease;
@@ -51,6 +58,7 @@ body {
     justify-content: center;
     flex-direction: column;
     background-image: url('img/piso.png');
+    z-index: 1;
     background-size: cover;
 }
 
@@ -62,26 +70,32 @@ body {
 .start {
     background-color: green;
     background-image: url('img/mario.png');
+    z-index: 3;
     background-size: cover;
 }
 
 .goal {
     background-color: red;
     background-image: url('img/bloque.png');
+    z-index: 2;
     background-size: cover;
 }
 
 .wall {
     background-image: url('img/muro.png');
+    z-index: 2;
     background-size: cover;
-    /* background-color: black; */
     color: white;
 }
 
 .open {
     /* background-color: lightgreen; */
+    z-index: 3;
     background-image: url('img/mario.png');
     background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.8;
 }
 
 .closed {
@@ -167,10 +181,15 @@ body {
 }
 
 #Nodo {
-    background-image: url('img/mario.png');
-    background-size: cover;
     height: var(--sizeCell);
     width: var(--sizeCell);
+}
+
+#campoNodo .mario {
+    height: 50px;
+    width: 50px;
+    background-image: url('img/mario.png');
+    background-size: cover;
 }
 
 #Nodo p {
@@ -189,11 +208,11 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    grid-area: front;
 }
 
 #Frontera {
     color: white;
-    grid-area: front;
     justify-content: center;
     display: flex;
     flex-wrap: wrap; 
