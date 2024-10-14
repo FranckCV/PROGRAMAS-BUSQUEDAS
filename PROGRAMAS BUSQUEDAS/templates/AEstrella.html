@@ -6,12 +6,15 @@
 
 {% block texto %}
 
-    Se combina el coste acumulado desde el nodo inicial 
-    con una heurística que estima el coste hasta el objetivo, utilizando 
-    la función f(n) = g(n) + h(n). <br>
-    Este enfoque garantiza encontrar el 
-    camino más corto si la heurística es admisible y es eficiente al 
-    priorizar nodos.
+ <div class="container">
+    <h1>Algoritmo A*</h1>
+    <p>A* es un algoritmo de búsqueda que encuentra el camino más corto entre dos nodos usando:</p>
+    <ul>
+        <li><strong>g(n)</strong>: costo real desde el inicio.</li>
+        <li><strong>h(n)</strong>: estimación del costo al destino.</li>
+    </ul>
+    <p>Elige el nodo con el menor <strong>f(n) = g(n) + h(n)</strong>, optimizando eficiencia y precisión.</p>
+</div>
 
 {% endblock %} 
 
