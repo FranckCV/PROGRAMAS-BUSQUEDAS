@@ -67,7 +67,7 @@ body {
 
 #cuadro a {
     background-color: #b8b8b8;
-    color: black;
+    color: #ffffff;
     padding: 5px;
     border-radius: 20px;
     text-decoration: none;
@@ -81,10 +81,14 @@ body {
     color: black;
 }
 
-#cuadro .ccompletoooo {
-    background-color: #3f3f3f;
-    color: white;
+#cuadro .busq_i {
+    background-color: #b90422;
 }
+
+#cuadro .busq_ni {
+    background-color: #004463;
+}
+
 
 #campoGrid {
     grid-area: tabla;

@@ -4,7 +4,21 @@ const sizeCell = 65;
 const grid = [];
 const timeExecute = 100;
 let start, goal;
-let maxDepth = 8; // Nivel hasta donde puede llegar la búsqueda
+let maximoDepth = 5;
+
+const campo = document.querySelector("#Nodo");
+document.addEventListener('DOMContentLoaded',() => {
+    document.querySelector("#campoNodo .tittle").innerText = "NIVEL";
+    campo.innerHTML = `
+        <input type="number" min="0" max="10" value="5">
+    `;
+    
+    const campoNum = campo.querySelector("input");
+    campoNum.addEventListener('click',() => {
+        maximoDepth = campoNum.value;
+        actualizarLevel();
+    });    
+});
 
 function createGrid() {
     const gridElement = document.getElementById('grid');
@@ -44,10 +58,24 @@ function createGrid() {
                 cell.isWall = true;
                 cellElement.classList.add('wall');
             }
+
+            // if (
+            //     (i === 0 && j === 2) || 
+            //     (i === 1 && j === 3) || 
+            //     (i === 1 && j === 4) || 
+            //     (i === 3 && j === 0) || 
+            //     (i === 3 && j === 2) || 
+            //     (i === 3 && j === 4) || 
+            //     (i === 4 && j === 2)
+            // ) {
+            //     cell.isWall = true;
+            //     cellElement.classList.add('wall');
+            // }
+
         }
     }
 
-    ruta.innerHTML = `<span class="error">Nivel Maximo: ${maxDepth}</span>`;
+    actualizarLevel();
 
 }
 
@@ -65,6 +93,11 @@ function getNeighbors(node) {
 
 const ruta = document.querySelector('#Ruta');
 const arbol = document.querySelector('#Frontera');
+
+function actualizarLevel() {
+    ruta.innerHTML = `<span class="error">Nivel Maximo: ${maximoDepth}</span>`;
+}
+
 
 function addToFrontera(parent, neighbors) {
     const fronteraContainer = document.getElementById('Frontera');
@@ -117,6 +150,7 @@ function addToFrontera(parent, neighbors) {
 
 function updateNodoActual(current) {
     const nodoElement = document.getElementById('Nodo');
+    document.querySelector("#campoNodo .tittle").innerHTML = "NODO";
     nodoElement.innerHTML = `<p>${current.x},${current.y}</p>`;
 }
 
@@ -151,7 +185,7 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function depthLimitedSearch(node, goal, depth) {
+async function depthLimitedSearch(node, goal, depth , maxDepth) {
     let closedSet = [];
 
     async function dfs(current, depth) {
@@ -195,9 +229,11 @@ async function depthLimitedSearch(node, goal, depth) {
 
 createGrid();
 
+actualizarLevel();
+
 const btnEmpezar = document.querySelector('#iniciar');
 btnEmpezar.addEventListener('click', () => {
-    depthLimitedSearch(start, goal, 0);
+    depthLimitedSearch(start, goal, 0 , maximoDepth);
     btnEmpezar.disabled = true;
 });
 
