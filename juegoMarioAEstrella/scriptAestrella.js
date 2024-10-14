@@ -1,9 +1,9 @@
-const cols = 15;
-const rows = 8;
-const sizeCell = 60;
+const cols = 10;
+const rows = 10;
+const sizeCell = 50;
 const grid = [];
 const timeExecute = 75;
-const nivelDificultad = 25;
+const nivelDificultad = 20;
 const enemies = ["muro", "hongo", "tortuga"];
 let start, goal;
 
@@ -36,13 +36,19 @@ function createGrid() {
             grid[i][j] = cell;
             cellElement.innerHTML = `<span>${i},${j}</span>`;
 
-            if (i === rows - 1 && j === 0) {
+            if (i === parseInt((rows - 1)) && j === parseInt((cols - 1)/2)) {
                 start = cell;
                 cellElement.classList.add('start');
-            } else if (i === rows - 1 && j === cols - 1) {
+            } else if (i === 0 && j === parseInt((cols - 1)/2)) {
                 goal = cell;
                 cellElement.classList.add('goal');
             }
+
+            if ((i % 2 == 0 && j % 2 != 0 ) || (j % 2 == 0 && i % 2 != 0 )) {
+                cellElement.classList.add("cell_1");
+            } else if ((j % 2 != 0 && i % 2 != 0 ) || (j % 2 == 0 && i % 2 == 0 )) {
+                cellElement.classList.add("cell_2");
+            } 
 
             if (Math.random() < nivelDificultad / 100 && cell !== start && cell !== goal) {
                 cell.isWall = true;
@@ -78,28 +84,27 @@ function addToFrontera(parent, neighbors) {
 
     const parentCostCell = document.createElement('div');
     parentCostCell.classList.add('table-cell');
-    parentCostCell.innerText = parent ? parent.g : 0;
-
-    const separatorCell = document.createElement('div');
-    separatorCell.classList.add('table-cell');
-    separatorCell.innerText = parent.parent ? `${parent.x},${parent.y}` : '-';
+    parentCostCell.innerHTML = parent ? `<span> ${parent.g} + ${parent.h}</span><b>${parent.f}</b>` : "g: -, h: -, f: -";
 
     const parentNameCell = document.createElement('div');
     parentNameCell.classList.add('table-cell');
-    parentNameCell.innerText = parent ? `${parent.x},${parent.y}` : "-";
+    parentNameCell.innerHTML = parent ? `${parent.x},${parent.y}` : "-";
 
     parentColumn.appendChild(parentCostCell);
-    parentColumn.appendChild(separatorCell);
     parentColumn.appendChild(parentNameCell);
     fronteraContainer.appendChild(parentColumn);
 
+    // Añadir los vecinos a la frontera
     neighbors.forEach(neighbor => {
         const neighborColumn = document.createElement('div');
         neighborColumn.classList.add('table-column');
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p>${parent.g} + 1</p><p><b>${parent.g + 1}</b></p>`;
+        // Mostrar los valores g, h, f del vecino
+        costCell.innerHTML = `
+            <span> ${neighbor.g} + ${neighbor.h} </span><b>${neighbor.f}</b>
+        `;
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
@@ -116,6 +121,7 @@ function addToFrontera(parent, neighbors) {
         fronteraContainer.appendChild(neighborColumn);
     });
 }
+
 
 function updateNodoActual(current) {
     const nodoElement = document.getElementById('Nodo');
@@ -135,19 +141,39 @@ function updateExplorados(closedSet) {
 
 function reconstructPath(current) {
     let delay = 0;
+    const fronteraContainer = document.getElementById('Frontera').children;
+
+    // Crear un array para almacenar las coordenadas del camino
+    const caminoCoords = [];
+
+    // Recorremos el camino desde el nodo objetivo hasta el inicio
     ruta.innerHTML = '';
     while (current) {
+        caminoCoords.push(`${current.x},${current.y}`);
         const node = current;
+
         setTimeout(() => {
             if (node && node.element) {
-                node.element.classList.add('path');
+                node.element.classList.add('path'); // Pintar el nodo en la cuadrícula
                 ruta.innerHTML += `<p>${node.x},${node.y}</p>`;
             }
         }, delay * 20);
+
         current = current.parent;
         delay++;
     }
+
+    // Después de obtener el camino, pintar las columnas correspondientes en la frontera
+    setTimeout(() => {
+        for (let column of fronteraContainer) {
+            const coords = column.querySelector('.table-cell:last-child').innerText;
+            if (caminoCoords.includes(coords)) {
+                column.classList.add('final-path'); // Aplicar la clase para marcar como parte del camino final
+            }
+        }
+    }, delay * 20); // Esperar a que se complete la visualización del camino en la cuadrícula
 }
+
 
 function heuristic(node, goal) {
     return Math.abs(node.x - goal.x) + Math.abs(node.y - goal.y); // Distancia Manhattan

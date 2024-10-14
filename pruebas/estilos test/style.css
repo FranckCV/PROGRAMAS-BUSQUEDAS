@@ -1,0 +1,35 @@
+body {
+    perspective: 500px;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    transform: rotateX(60deg);
+    perspective: 300px;
+}
+
+.cell {
+    background-color: #4CAF50;
+    border: 1px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+
+.tortuga {
+    background-image: url('img/47673.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: rotateX(-27.5deg) scaleY(2.25) translateY(-15px);
+}

@@ -18,8 +18,9 @@ body {
     grid-template-areas:
         "tabla reiniciar cuadro texto"
         "tabla iniciar cuadro texto"
-        "tabla explorados explorados explorados"
-        "tabla nodo ruta ruta"
+        "tabla nodo cuadro texto"
+        "tabla ruta ruta ruta"
+        "explorados explorados explorados explorados"
         "arbol arbol arbol arbol";
 }
 
