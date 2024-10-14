@@ -1,0 +1,25 @@
+{% extends "maestra.html" %}
+
+{% block titulo %} 
+    Costo Uniforme 
+{% endblock %}
+
+{% block estilos %} 
+    <style>
+        body {
+            background-color: #302e20;
+        }
+    </style>
+{% endblock %}
+
+{% block texto %} 
+<div class="container">
+    <h1>Búsqueda de Coste Uniforme</h1>
+        <p>La Búsqueda de Coste Uniforme (Uniform Cost Search) es un algoritmo que expande el nodo con el menor costo acumulado desde el inicio. A diferencia de la búsqueda por amplitud, considera el costo real de cada movimiento, no solo el número de pasos.</p>
+        <p>Es ideal para problemas en los que cada movimiento tiene un costo diferente y se necesita encontrar la solución más económica.</p>
+</div>
+{% endblock %}
+
+{% block scripts %} 
+    <script src="static/js/scriptCostoUniforme.js"></script>
+{% endblock %}

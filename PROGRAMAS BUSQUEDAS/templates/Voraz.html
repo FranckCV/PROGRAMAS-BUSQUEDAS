@@ -1,0 +1,23 @@
+{% extends "maestra.html" %}
+
+{% block titulo %} 
+    Voraz
+{% endblock %}
+
+{% block estilos %}
+    <style>
+        body {
+            background-color: #37143b;
+        }
+    </style>
+{% endblock %}
+
+{% block texto %}
+<h1>Búsqueda Voraz</h1>
+<p>La Búsqueda Voraz es un algoritmo que siempre selecciona el nodo que parece estar más cerca de la solución, basándose únicamente en la heurística. Es rápida pero no garantiza encontrar la solución más óptima, ya que no considera el costo acumulado desde el nodo inicial.</p>
+<p>Es útil cuando se necesita una solución rápida y no importa si es la más óptima.</p>
+{% endblock %}
+
+{% block scripts %} 
+    <script src="static/js/scriptVoraz.js"></script>
+{% endblock %}

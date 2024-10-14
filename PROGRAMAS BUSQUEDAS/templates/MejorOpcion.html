@@ -1,0 +1,25 @@
+{% extends "maestra.html" %}
+
+{% block titulo %} 
+    Mejor Opcion
+{% endblock %}
+
+{% block estilos %}
+    <style>
+        body {
+            background-color: #384920;
+        }
+    </style>
+{% endblock %}
+
+{% block texto %} 
+<div class="container">
+    <h1>Búsqueda por la Mejor Opción</h1>
+    <p>La Búsqueda por la Mejor Opción (Best-First Search) selecciona el nodo que parece más prometedor en base a una función heurística. La heurística estima cuán cerca está el nodo actual de la solución final.</p>
+    <p>Este algoritmo no siempre garantiza encontrar el camino más corto, pero puede ser más eficiente en gráficos grandes donde se necesita explorar rápidamente las mejores opciones.</p>
+</div>
+{% endblock %}
+
+{% block scripts %} 
+    <script src="static/js/scriptMejorOpcion.js"></script>
+{% endblock %}

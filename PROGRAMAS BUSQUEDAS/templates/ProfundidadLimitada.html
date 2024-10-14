@@ -1,0 +1,26 @@
+{% extends "maestra.html" %}
+
+{% block titulo %} 
+    Profundidad Limitada
+{% endblock %}
+
+{% block estilos %}
+    <style>
+        body {
+            background-color: #202f30;
+        }
+    </style>
+{% endblock %}
+
+{% block texto %}
+<div class="container">
+    <h1>Búsqueda en Profundidad Limitada</h1>
+        <p>La Búsqueda en Profundidad Limitada es una variante de la búsqueda en profundidad tradicional. Explora los nodos del gráfico profundizando hasta un nivel predefinido. Si no se encuentra una solución dentro de ese límite, la búsqueda falla.</p>
+        <p>Es útil cuando hay un límite razonable en la profundidad, pero corre el riesgo de perder soluciones que están más allá del límite impuesto.</p>
+</div>
+{% endblock %}
+
+
+{% block scripts %} 
+    <script src="static/js/scriptProfundidadLimitada.js"></script>
+{% endblock %}
