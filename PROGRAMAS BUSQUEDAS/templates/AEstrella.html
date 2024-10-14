@@ -1,12 +1,12 @@
 {% extends "maestra.html" %}
 
-{% block titulo %} 
-    A * 
+{% block titulo %}
+A *
 {% endblock %}
 
 {% block texto %}
 
- <div class="container">
+<div class="container">
     <h1>Algoritmo A*</h1>
     <p>A* es un algoritmo de búsqueda que encuentra el camino más corto entre dos nodos usando:</p>
     <ul>
@@ -16,16 +16,16 @@
     <p>Elige el nodo con el menor <strong>f(n) = g(n) + h(n)</strong>, optimizando eficiencia y precisión.</p>
 </div>
 
-{% endblock %} 
-
-{% block estilos %}
-    <style>
-        body {
-            background-color: #202130;
-        }
-    </style>
 {% endblock %}
 
-{% block scripts %} 
-    <script src="static/js/scriptAestrella.js"></script>
+{% block estilos %}
+<style>
+    body {
+        background-color: #202130;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="static/js/scriptAestrella.js"></script>
 {% endblock %}

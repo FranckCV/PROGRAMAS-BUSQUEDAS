@@ -13,16 +13,11 @@
 {% endblock %}
 
 {% block texto %} 
-    Explora nodos en un gráfico considerando el costo total acumulado
-    para llegar a cada nodo desde el nodo inicial seleccionando el nodo con el costo más bajo para
-    ser explorado a continuación. 
-    
-    Este enfoque garantiza encontrar la solución óptima en escenarios donde los 
-    costos de las transiciones entre nodos pueden variar, ya que siempre 
-    elige la ruta más barata primero.
-
-    Es especialmente útil en problemas donde los caminos tienen 
-    diferentes costos y se busca minimizar el costo total.
+<div class="container">
+    <h1>Búsqueda de Coste Uniforme</h1>
+        <p>La Búsqueda de Coste Uniforme (Uniform Cost Search) es un algoritmo que expande el nodo con el menor costo acumulado desde el inicio. A diferencia de la búsqueda por amplitud, considera el costo real de cada movimiento, no solo el número de pasos.</p>
+        <p>Es ideal para problemas en los que cada movimiento tiene un costo diferente y se necesita encontrar la solución más económica.</p>
+</div>
 {% endblock %}
 
 {% block scripts %} 

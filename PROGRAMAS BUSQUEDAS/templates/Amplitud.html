@@ -13,11 +13,12 @@
 {% endblock %}
 
 {% block texto %}
-    Explora todos los nodos en un nivel antes de pasar al siguiente,
-    garantizando que se encuentre la solución más cercana al nodo inicial. 
-    Utiliza una cola para mantener los nodos a explorar y es ideal para
-    problemas donde las soluciones están distribuidas uniformemente.
-    Sin embargo, puede consumir mucha memoria si el árbol de búsqueda es amplio y profundo.
+<div class="container">
+    <h1>Búsqueda por Amplitud (BFS)</h1>
+    <p>La Búsqueda por Amplitud (BFS) es un algoritmo que explora los nodos de un gráfico nivel por nivel. Comienza en el nodo raíz y visita todos sus vecinos antes de moverse a los nodos del siguiente nivel.</p>
+    <p>Este algoritmo usa una cola (FIFO) para rastrear los nodos pendientes y es ideal para encontrar el camino más corto en gráficos no ponderados.</p>
+    
+</div>
 {% endblock %}
 
 {% block scripts %} 
