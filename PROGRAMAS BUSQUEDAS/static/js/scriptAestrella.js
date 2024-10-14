@@ -70,18 +70,13 @@ function addToFrontera(parent, neighbors) {
 
     const parentCostCell = document.createElement('div');
     parentCostCell.classList.add('table-cell');
-    parentCostCell.innerText = parent ? parent.g : 0;
-
-    const separatorCell = document.createElement('div');
-    separatorCell.classList.add('table-cell');
-    separatorCell.innerText = parent.parent ? `${parent.x},${parent.y}` : '-';
+    parentCostCell.innerHTML = parent ? `<span> ${parent.g} + ${parent.h}</span><b>${parent.f}</b>` : "g: -, h: -, f: -";
 
     const parentNameCell = document.createElement('div');
     parentNameCell.classList.add('table-cell');
-    parentNameCell.innerText = parent ? `${parent.x},${parent.y}` : "-";
+    parentNameCell.innerHTML = parent ? `${parent.x},${parent.y}` : "-";
 
     parentColumn.appendChild(parentCostCell);
-    parentColumn.appendChild(separatorCell);
     parentColumn.appendChild(parentNameCell);
     fronteraContainer.appendChild(parentColumn);
 
@@ -91,7 +86,9 @@ function addToFrontera(parent, neighbors) {
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p>${parent.g} + 1</p><p><b>${parent.g + 1}</b></p>`;
+        costCell.innerHTML = `
+            <span> ${neighbor.g} + ${neighbor.h} </span><b>${neighbor.f}</b>
+        `;
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
@@ -194,6 +191,7 @@ async function aStarSearch(start, goal) {
             await delay(timeExecute);
         }
     }
+    ruta.innerHTML = '<span class="error">No se encontró el objetivo</span>';
 }
 
 createGrid();

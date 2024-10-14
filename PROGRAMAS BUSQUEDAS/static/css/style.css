@@ -24,6 +24,14 @@ body {
         "arbol arbol arbol arbol";
 }
 
+.error {
+    background-color: red;
+    color: white;
+    border-radius: 20px;
+    padding-inline: 10px;
+    padding-block: 3px;
+}
+
 #campoTexto {
     grid-area: texto;
     display: flex;
@@ -36,7 +44,6 @@ body {
     background-color: #1d1d1d88;
     border-radius: 30px;
     padding: 10px;
-    /* width: 100%; */
     text-align: center;
     font-size: 90%;
 }
@@ -164,7 +171,6 @@ body {
     color: white;
     display: flex;
     flex-wrap: wrap;
-    /* flex-direction: row-reverse; */
     gap: 10px;
 }
 
@@ -215,15 +221,12 @@ body {
     display: flex;
     flex-wrap: wrap; 
     gap: 10px; 
-    /* max-width: 100%; */
     overflow-x: auto;
 }
 
 .table-column {
     display: grid;
-    /* flex-direction: column; */
     grid-template-rows: 1.7fr 1fr 1fr;
-    /* align-items: center; */
     border: 2px solid rgb(255, 255, 255); 
     background-color: #333; 
     padding: 2px;
@@ -231,15 +234,13 @@ body {
 }
 
 .table-cell {
-    /* border: 1px solid rgb(255, 255, 255);  */
     padding: 5px;
     color: #333;
     background-color: white; 
     text-align: center;
     align-self: center;
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* border-bottom: 1px solid #444; */
+    display: flex;
+    flex-direction: column;
 }
 
 .table-cell p {

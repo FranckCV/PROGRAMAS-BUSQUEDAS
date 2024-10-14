@@ -147,7 +147,6 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Búsqueda Voraz (Greedy Best-First Search)
 async function greedySearch(start, goal) {
     let openSet = [start];
     let closedSet = [];
@@ -184,6 +183,7 @@ async function greedySearch(start, goal) {
             }
         }
     }
+    ruta.innerHTML = '<span class="error">No se encontró el objetivo</span>';
 }
 
 createGrid();

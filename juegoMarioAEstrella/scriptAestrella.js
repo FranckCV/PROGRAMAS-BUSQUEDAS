@@ -94,14 +94,12 @@ function addToFrontera(parent, neighbors) {
     parentColumn.appendChild(parentNameCell);
     fronteraContainer.appendChild(parentColumn);
 
-    // Añadir los vecinos a la frontera
     neighbors.forEach(neighbor => {
         const neighborColumn = document.createElement('div');
         neighborColumn.classList.add('table-column');
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        // Mostrar los valores g, h, f del vecino
         costCell.innerHTML = `
             <span> ${neighbor.g} + ${neighbor.h} </span><b>${neighbor.f}</b>
         `;
@@ -143,10 +141,8 @@ function reconstructPath(current) {
     let delay = 0;
     const fronteraContainer = document.getElementById('Frontera').children;
 
-    // Crear un array para almacenar las coordenadas del camino
     const caminoCoords = [];
-
-    // Recorremos el camino desde el nodo objetivo hasta el inicio
+    
     ruta.innerHTML = '';
     while (current) {
         caminoCoords.push(`${current.x},${current.y}`);
@@ -154,7 +150,7 @@ function reconstructPath(current) {
 
         setTimeout(() => {
             if (node && node.element) {
-                node.element.classList.add('path'); // Pintar el nodo en la cuadrícula
+                node.element.classList.add('path');
                 ruta.innerHTML += `<p>${node.x},${node.y}</p>`;
             }
         }, delay * 20);
@@ -163,17 +159,15 @@ function reconstructPath(current) {
         delay++;
     }
 
-    // Después de obtener el camino, pintar las columnas correspondientes en la frontera
     setTimeout(() => {
         for (let column of fronteraContainer) {
             const coords = column.querySelector('.table-cell:last-child').innerText;
             if (caminoCoords.includes(coords)) {
-                column.classList.add('final-path'); // Aplicar la clase para marcar como parte del camino final
+                column.classList.add('final-path'); 
             }
         }
-    }, delay * 20); // Esperar a que se complete la visualización del camino en la cuadrícula
+    }, delay * 20); 
 }
-
 
 function heuristic(node, goal) {
     return Math.abs(node.x - goal.x) + Math.abs(node.y - goal.y); // Distancia Manhattan

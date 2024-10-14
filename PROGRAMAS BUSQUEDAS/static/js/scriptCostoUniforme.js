@@ -208,6 +208,8 @@ async function uniformCostSearch(start, goal) {
             await delay(50);
         }
     }
+    ruta.innerHTML = '<span class="error">No se encontró el objetivo</span>';
+
 }
 
 createGrid();

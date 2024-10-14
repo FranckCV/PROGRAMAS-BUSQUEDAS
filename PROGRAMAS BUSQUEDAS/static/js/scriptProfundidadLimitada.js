@@ -46,6 +46,9 @@ function createGrid() {
             }
         }
     }
+
+    ruta.innerHTML = `<span class="error">Nivel Maximo: ${maxDepth}</span>`;
+
 }
 
 function getNeighbors(node) {
@@ -111,7 +114,6 @@ function addToFrontera(parent, neighbors) {
         fronteraContainer.appendChild(neighborColumn);
     });
 }
-
 
 function updateNodoActual(current) {
     const nodoElement = document.getElementById('Nodo');
@@ -186,7 +188,7 @@ async function depthLimitedSearch(node, goal, depth) {
     const found = await dfs(node, 0);
 
     if (!found) {
-        ruta.innerHTML = '<span>No se encontró solución</span>';
+        ruta.innerHTML += '<span>No se encontró solución</span>';
         arbol.innerHTML += '<span>No se encontró solución</span>';
     }
 }

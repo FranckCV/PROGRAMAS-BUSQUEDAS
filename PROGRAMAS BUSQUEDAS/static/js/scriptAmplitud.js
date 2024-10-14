@@ -141,6 +141,8 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+const ruta = document.querySelector('#Ruta');
+
 async function bfs(start, goal) {
     let openSet = [start];
     let closedSet = [];
@@ -172,6 +174,8 @@ async function bfs(start, goal) {
             }
         }
     }
+    ruta.innerHTML = '<span class="error">No se encontró el objetivo</span>';
+
 }
 
 createGrid();
