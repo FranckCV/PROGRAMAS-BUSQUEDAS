@@ -5,11 +5,15 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #19161d;
+    background-color: #1f2d38;
     font-size: 1.1vw;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-image: url('img/background_transparente.png');
+    /* background-position: center; */
+    /* background-repeat: no-repeat; */
+    /* background-size: cover; */
 }
 
 .body_busqueda {
@@ -36,13 +40,13 @@ body {
         "tabla front front front"    
         "explorados front front front"
         ; */
-    grid-template-columns: auto auto;
+    grid-template-columns: auto 10vw;
     grid-template-areas:
-        "tabla tabla control"
-        "tabla tabla nodo"
-        "texto texto texto"
-        "explorados explorados explorados"    
-        "front front front"
+        "tabla control"
+        "tabla nodo"
+        "texto texto"
+        "explorados explorados"    
+        "front front "
         ;
 }
 
@@ -60,15 +64,14 @@ body {
 
 .cell {
     /* background-color: #eee; */
-    border: 1px solid #cccccc05;
-    color: white;
+    border: 1px solid #ccc;
     text-align: center;
     transition: background-color 0.3s ease;
     align-items: center;
     display: flex;
     justify-content: center;
     flex-direction: column;
-    /* background-image: url('img/piso.png'); */
+    background-image: url('img/piso.png');
     z-index: 1;
     background-size: cover;
 }
@@ -89,14 +92,34 @@ body {
     background-color: red;
     background-image: url('img/bloque.png');
     z-index: 2;
-    background-size: cover;
+    background-size: contain;
+    /* ba */
+    
 }
 
 .wall {
-    background-image: url('img/muro.png');
     z-index: 2;
-    background-size: cover;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     color: white;
+    background-color: #861b00;
+}
+
+.muro {
+    background-image: url('img/muro.png');
+}
+
+.hongo {
+    background-image: url('img/goomba-walking.gif');
+}
+
+.tortuga {
+    background-image: url('img/koopa-troopa-koopa.gif');
+}
+
+.coin {
+    background-color: #e28c0c;
 }
 
 .open {
@@ -107,12 +130,12 @@ body {
     background-size: contain;
     background-repeat: no-repeat;
     opacity: 0.8;
-    /* background-color: #b1482e; */
+    background-color: #b1482e;
 }
 
 .closed {
     color: white;
-    /* background-color: #b1482e; */
+    background-color: #b1482e;
 }
 
 .path {
@@ -207,7 +230,7 @@ body {
 #campoNodo .mario {
     height: 50px;
     width: 50px;
-    background-image: url('img/mario.png');
+    background-image: url('img/2d-mario-running.gif');
     background-size: cover;
 }
 

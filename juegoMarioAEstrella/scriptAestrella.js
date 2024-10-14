@@ -1,5 +1,5 @@
-const cols = 10;
-const rows = 10;
+const cols = 15;
+const rows = 8;
 const sizeCell = 60;
 const grid = [];
 const timeExecute = 75;
@@ -36,7 +36,7 @@ function createGrid() {
             grid[i][j] = cell;
             cellElement.innerHTML = `<span>${i},${j}</span>`;
 
-            if (i === 0 && j === 0) {
+            if (i === rows - 1 && j === 0) {
                 start = cell;
                 cellElement.classList.add('start');
             } else if (i === rows - 1 && j === cols - 1) {
@@ -202,22 +202,12 @@ async function aStarSearch(start, goal) {
             await delay(timeExecute);
         }
     }
+
+    ruta.innerHTML = '<span>No se encontró el objetivo</span>';
+
 }
 
 createGrid();
-
-// const cells = document.querySelectorAll('.cell');
-// cells.forEach(cell => {
-//     cell.addEventListener('click',() => { 
-//         if (cell.classList.contains('wall')) {
-//             cell.isWall = false;
-//             cell.classList.remove('wall');
-//         } else {
-//             cell.isWall = true;
-//             cell.classList.add('wall');
-//         }
-//     });
-// });
 
 const btnEmpezar = document.querySelector('#iniciar');
 btnEmpezar.addEventListener('click', () => {

@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda A* con Monedas</title>
+    <style>
+        #grid {
+            display: grid;
+            gap: 1px;
+        }
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .wall {
+            background-color: black;
+        }
+
+        .start {
+            background-color: green;
+        }
+
+        .goal {
+            background-color: red;
+        }
+
+        .coin {
+            background-color: yellow;
+        }
+
+        .open {
+            background-color: lightblue;
+        }
+
+        .closed {
+            background-color: lightgray;
+        }
+
+        .path {
+            background-color: orange;
+        }
+    </style>
+</head>
+<body>
+    <h1>Búsqueda A* con Monedas</h1>
+    <div id="grid"></div>
+    <button id="btnEmpezar">Empezar</button>
+    <div id="ruta"></div>
+
+    <script>
+        const rows = 10;
+        const cols = 10;
+        const sizeCell = 30;
+        let grid = [];
+        let start = null;
+        let goal = null;
+        let coins = [];
+        const nivelDificultad = 30;  // Porcentaje de paredes en el mapa
+        const timeExecute = 100;  // Milisegundos de retraso para visualización
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        function createGrid() {
+            const gridElement = document.getElementById('grid');
+            gridElement.style.gridTemplateColumns = `repeat(${cols},${sizeCell}px)`;
+            gridElement.style.gridTemplateRows = `repeat(${rows},${sizeCell}px)`;
+
+            for (let i = 0; i < rows; i++) {
+                grid[i] = [];
+                for (let j = 0; j < cols; j++) {
+                    const cellElement = document.createElement('div');
+                    cellElement.classList.add('cell');
+                    gridElement.appendChild(cellElement);
+
+                    const cell = {
+                        x: i,
+                        y: j,
+                        f: 0,
+                        g: 0,
+                        h: 0,
+                        isWall: false,
+                        isCoin: false,  // Agregamos la propiedad para la moneda
+                        parent: null,
+                        element: cellElement
+                    };
+                    grid[i][j] = cell;
+                    cellElement.innerHTML = `<span>${i},${j}</span>`;
+
+                    if (i === 0 && j === 0) {
+                        start = cell;
+                        cellElement.classList.add('start');
+                    } else if (i === rows - 1 && j === cols - 1) {
+                        goal = cell;
+                        cellElement.classList.add('goal');
+                    }
+
+                    if (Math.random() < nivelDificultad / 100 && cell !== start && cell !== goal) {
+                        cell.isWall = true;
+                        cellElement.classList.add('wall');
+                    }
+                }
+            }
+
+            // Colocar monedas en posiciones aleatorias
+            for (let i = 0; i < 3; i++) {
+                let x = getRandomInt(rows);
+                let y = getRandomInt(cols);
+                let randomCell = grid[x][y];
+
+                if (!randomCell.isWall && randomCell !== start && randomCell !== goal) {
+                    randomCell.isCoin = true;
+                    randomCell.element.classList.add('coin');
+                    coins.push(randomCell);  // Agregamos la moneda a la lista de monedas
+                }
+            }
+        }
+
+        function heuristic(a, b) {
+            // Distancia Manhattan
+            return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+        }
+
+        function getNeighbors(node) {
+            const neighbors = [];
+            const {x, y} = node;
+
+            if (x > 0) neighbors.push(grid[x - 1][y]);  // Arriba
+            if (x < rows - 1) neighbors.push(grid[x + 1][y]);  // Abajo
+            if (y > 0) neighbors.push(grid[x][y - 1]);  // Izquierda
+            if (y < cols - 1) neighbors.push(grid[x][y + 1]);  // Derecha
+
+            return neighbors;
+        }
+
+        function reconstructPath(current) {
+            while (current.parent) {
+                current.element.classList.add('path');
+                current = current.parent;
+            }
+        }
+
+        async function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function aStarSearch(start, goal) {
+            let openSet = [start];
+            let closedSet = [];
+
+            start.g = 0;
+            start.h = heuristic(start, goal);
+            start.f = start.g + start.h;
+
+            while (openSet.length > 0) {
+                let current = openSet.reduce((prev, node) => node.f < prev.f ? node : prev);
+
+                if (current === goal) {
+                    reconstructPath(current);
+                    return true;  // Regresa verdadero si alcanza el objetivo
+                }
+
+                openSet = openSet.filter(node => node !== current);
+                closedSet.push(current);
+                current.element.classList.remove('open');
+                current.element.classList.add('closed');
+
+                let neighbors = getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall);
+                for (const neighbor of neighbors) {
+                    let tentative_g = current.g + 1;
+
+                    if (!openSet.includes(neighbor)) {
+                        openSet.push(neighbor);
+                        neighbor.element.classList.add('open');
+                        await delay(timeExecute);
+                    } else if (tentative_g >= neighbor.g) {
+                        continue;
+                    }
+
+                    neighbor.g = tentative_g;
+                    neighbor.h = heuristic(neighbor, goal);
+                    neighbor.f = neighbor.g + neighbor.h;
+                    neighbor.parent = current;
+                    await delay(timeExecute);
+                }
+            }
+
+            document.getElementById('ruta').innerHTML = '<span>No se encontró el objetivo</span>';
+            return false;  // No se alcanzó el objetivo
+        }
+
+        async function aStarSearchMultipleGoals(start, goals) {
+            let currentStart = start;
+            let success = false;
+
+            // Recorremos las monedas (objetivos intermedios) primero
+            for (let i = 0; i < goals.length; i++) {
+                success = await aStarSearch(currentStart, goals[i]);
+                if (!success) return;  // Si no puede alcanzar una moneda, detenerse
+                currentStart = goals[i];  // Actualizamos el nuevo punto de partida
+                goals[i].element.classList.remove('coin');  // Remover clase de moneda recolectada
+                goals[i].isCoin = false;  // Marcamos que la moneda ha sido tomada
+                await delay(500); // Breve pausa tras recolectar cada moneda
+            }
+
+            // Después de recoger las monedas, vamos al objetivo final
+            success = await aStarSearch(currentStart, goal);
+            if (!success) {
+                document.getElementById('ruta').innerHTML = '<span>No se pudo llegar a la meta</span>';
+            } else {
+                document.getElementById('ruta').innerHTML = '<span>¡Mario ha llegado a la meta!</span>';
+            }
+        }
+
+        document.getElementById('btnEmpezar').addEventListener('click', () => {
+            const allGoals = [...coins];  // Monedas como objetivos intermedios
+            aStarSearchMultipleGoals(start, allGoals);
+            document.getElementById('btnEmpezar').disabled = true;
+        });
+
+        createGrid();
+    </script>
+</body>
+</html>

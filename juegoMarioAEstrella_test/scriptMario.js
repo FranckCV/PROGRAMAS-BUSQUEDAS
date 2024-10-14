@@ -3,7 +3,7 @@ const rows = 7;
 const sizeCell = 60;
 const grid = [];
 const timeExecute = 75;
-const nivelDificultad = 25;
+const nivelDificultad = 20;
 let start, goal;
 
 function createGrid() {
@@ -65,7 +65,6 @@ const arbol = document.querySelector('#Frontera');
 function addToFrontera(parent, neighbors) {
     const fronteraContainer = document.getElementById('Frontera');
 
-    // Crear la columna para el nodo padre, si es el inicio se muestra con "-"
     const parentColumn = document.createElement('div');
     parentColumn.classList.add('table-column');
 
@@ -195,7 +194,10 @@ async function aStarSearch(start, goal) {
             await delay(timeExecute);
         }
     }
+
+    ruta.innerHTML = '<span>No se encontró el objetivo</span>';
 }
+
 
 createGrid();
 
