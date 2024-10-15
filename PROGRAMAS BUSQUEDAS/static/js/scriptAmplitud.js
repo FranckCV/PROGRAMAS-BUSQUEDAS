@@ -59,24 +59,13 @@ function getNeighbors(node) {
 function addToFrontera(parent, neighbors) {
     const fronteraContainer = document.getElementById('Frontera');
 
-    // Crear la columna para el nodo padre, si es el inicio se muestra con "-"
     const parentColumn = document.createElement('div');
     parentColumn.classList.add('table-column');
 
-    const parentCostCell = document.createElement('div');
-    parentCostCell.classList.add('table-cell');
-    parentCostCell.innerText = "-";
-
-    const separatorCell = document.createElement('div');
-    separatorCell.classList.add('table-cell');
-    separatorCell.innerText = parent.parent ? `${parent.x},${parent.y}` : '-';
-
     const parentNameCell = document.createElement('div');
     parentNameCell.classList.add('table-cell');
-    parentNameCell.innerText = parent ? `${parent.x},${parent.y}` : "-";
+    parentNameCell.innerText = `${parent.x},${parent.y}`; // Mostrar coordenadas del nodo padre
 
-    parentColumn.appendChild(parentCostCell);
-    parentColumn.appendChild(separatorCell);
     parentColumn.appendChild(parentNameCell);
     fronteraContainer.appendChild(parentColumn);
 
@@ -84,22 +73,16 @@ function addToFrontera(parent, neighbors) {
         const neighborColumn = document.createElement('div');
         neighborColumn.classList.add('table-column');
 
-        const costCell = document.createElement('div');
-        costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p>-</p>`;
+        const neighborCell = document.createElement('div');
+        neighborCell.classList.add('table-cell');
+        neighborCell.innerText = `${neighbor.x},${neighbor.y}`;  // Coordenadas del vecino
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
-        parentNodeCell.innerText = `${parent.x},${parent.y}`;
+        parentNodeCell.innerText = `${parent.x},${parent.y}`; // Mostrar el padre
 
-        const neighborCell = document.createElement('div');
-        neighborCell.classList.add('table-cell');
-        neighborCell.innerText = `${neighbor.x},${neighbor.y}`;
-
-        neighborColumn.appendChild(costCell);
         neighborColumn.appendChild(parentNodeCell);
         neighborColumn.appendChild(neighborCell);
-
         fronteraContainer.appendChild(neighborColumn);
     });
 }
@@ -149,11 +132,15 @@ async function bfs(start, goal) {
     let closedSet = [];
 
     while (openSet.length > 0) {
-        let current = openSet.shift(); // Se toma el primer nodo (FIFO)
+        let current = openSet.shift(); 
 
         updateNodoActual(current);
-        addToFrontera(current, getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall));
-        await delay(timeExecute);
+
+        let neighbors = getNeighbors(current).filter(neighbor => 
+            !closedSet.includes(neighbor) && !neighbor.isWall && !openSet.includes(neighbor)
+        );
+
+        addToFrontera(current, neighbors);
 
         if (current === goal) {
             reconstructPath(current);
@@ -165,19 +152,18 @@ async function bfs(start, goal) {
         current.element.classList.add('closed');
         updateExplorados(closedSet);
 
-        let neighbors = getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall);
         for (const neighbor of neighbors) {
-            if (!openSet.includes(neighbor)) {
-                neighbor.parent = current;
-                openSet.push(neighbor);
-                neighbor.element.classList.add('open');
+            if (!openSet.includes(neighbor) && !closedSet.includes(neighbor)) {
+                neighbor.parent = current; 
+                openSet.push(neighbor); 
+                neighbor.element.classList.add('open'); 
                 await delay(timeExecute);
             }
         }
     }
     ruta.innerHTML = '<span class="error">No se encontró el objetivo</span>';
-
 }
+
 
 createGrid();
 

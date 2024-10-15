@@ -85,39 +85,22 @@ function actualizarLevel() {
     ruta.innerHTML = `<span class="error">Nivel Maximo: ${maximoDepth}</span>`;
 }
 
-
 function addToFrontera(parent, neighbors) {
     const fronteraContainer = document.getElementById('Frontera');
 
-    const parentColumn = document.createElement('div');
-    parentColumn.classList.add('table-column');
-
-    const parentCostCell = document.createElement('div');
-    parentCostCell.classList.add('table-cell');
-    parentCostCell.innerText = parent ? "-" : 0;
-
-    const separatorCell = document.createElement('div');
-    separatorCell.classList.add('table-cell');
-    separatorCell.innerText = parent.parent ? `${parent.x},${parent.y}` : '-';
-
-    const parentNameCell = document.createElement('div');
-    parentNameCell.classList.add('table-cell');
-    parentNameCell.innerText = parent ? `${parent.x},${parent.y}` : "-";
-
-    parentColumn.appendChild(parentCostCell);
-    parentColumn.appendChild(separatorCell);
-    parentColumn.appendChild(parentNameCell);
-    fronteraContainer.appendChild(parentColumn);
-
     neighbors.forEach(neighbor => {
-        // Establecer el costo del vecino
-        neighbor.g = parent.g + 1; // Costo acumulado desde el inicio
+        if (neighbor === parent) return;
+
+        if (neighbor.isWall || neighbor.parent) return;
+
+        neighbor.g = parent.g + 1;
+
         const neighborColumn = document.createElement('div');
         neighborColumn.classList.add('table-column');
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p><b>-</b></p>`; // Muestra el costo acumulado
+        costCell.innerHTML = `<p><b>-</b></p>`; 
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
@@ -132,8 +115,11 @@ function addToFrontera(parent, neighbors) {
         neighborColumn.appendChild(neighborCell);
 
         fronteraContainer.appendChild(neighborColumn);
+
+        neighbor.parent = parent;
     });
 }
+
 
 function updateNodoActual(current) {
     const nodoElement = document.getElementById('Nodo');
@@ -172,16 +158,26 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function depthLimitedSearch(node, goal, depth , maxDepth) {
+function getNeighbors(node) {
+    const neighbors = [];
+    const { x, y } = node;
+
+    if (x > 0 && !grid[x - 1][y].isWall) neighbors.push(grid[x - 1][y]); // Arriba
+    if (x < rows - 1 && !grid[x + 1][y].isWall) neighbors.push(grid[x + 1][y]); // Abajo
+    if (y > 0 && !grid[x][y - 1].isWall) neighbors.push(grid[x][y - 1]); // Izquierda
+    if (y < cols - 1 && !grid[x][y + 1].isWall) neighbors.push(grid[x][y + 1]); // Derecha
+
+    return neighbors;
+}
+
+async function depthLimitedSearch(node, goal, depth, maxDepth) {
     let closedSet = [];
 
     async function dfs(current, depth) {
-        if (depth > maxDepth) {
-            return false;
-        }
+        if (depth > maxDepth) return false;
 
         updateNodoActual(current);
-        addToFrontera(current, getNeighbors(current));
+        addToFrontera(current, getNeighbors(current).filter(n => !n.isWall && !closedSet.includes(n))); // Solo vecinos válidos
         await delay(timeExecute);
 
         if (current === goal) {
@@ -193,7 +189,11 @@ async function depthLimitedSearch(node, goal, depth , maxDepth) {
         current.element.classList.add('closed');
         updateExplorados(closedSet);
 
-        const neighbors = getNeighbors(current).filter(neighbor => !neighbor.isWall && !closedSet.includes(neighbor));
+        const neighbors = getNeighbors(current).filter(neighbor => 
+            !neighbor.isWall && 
+            !closedSet.includes(neighbor) && 
+            neighbor !== current.parent // Evitar repetición de padre e hijo
+        );
 
         for (const neighbor of neighbors) {
             neighbor.parent = current;
@@ -209,10 +209,11 @@ async function depthLimitedSearch(node, goal, depth , maxDepth) {
     const found = await dfs(node, 0);
 
     if (!found) {
-        ruta.innerHTML += '<span>No se encontró solución</span>';
-        arbol.innerHTML += '<span>No se encontró solución</span>';
+        ruta.innerHTML += '<span class="error">No se encontró solución</span>';
+        arbol.innerHTML += '<span class="error">No se encontró solución</span>';
     }
 }
+
 
 createGrid();
 

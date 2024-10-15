@@ -1,3 +1,4 @@
+
 const cols = 5;
 const rows = 5;
 const sizeCell = 65;
@@ -20,9 +21,9 @@ function createGrid() {
             const cell = {
                 x: i,
                 y: j,
-                f: 0,
-                g: 0, // Distancia acumulada desde el inicio
-                h: 0, // Heurística (distancia Manhattan hasta el objetivo)
+                f: Infinity, // Inicializar f con infinito
+                g: Infinity, // Inicializar g con infinito
+                h: 0, // Heurística
                 isWall: false,
                 parent: null,
                 element: cellElement
@@ -64,13 +65,13 @@ const arbol = document.querySelector('#Frontera');
 function addToFrontera(parent, neighbors) {
     const fronteraContainer = document.getElementById('Frontera');
 
-    // Crear la columna para el nodo padre, si es el inicio se muestra con "-"
+    // Crear la columna para el nodo padre
     const parentColumn = document.createElement('div');
     parentColumn.classList.add('table-column');
 
     const parentCostCell = document.createElement('div');
     parentCostCell.classList.add('table-cell');
-    parentCostCell.innerHTML = parent ? `<span> ${parent.g} + ${parent.h}</span><b>${parent.f}</b>` : "g: -, h: -, f: -";
+    parentCostCell.innerHTML = parent ? `<span>${parent.g} + ${parent.h}</span><b>${parent.f}</b>` : " Vacio ";
 
     const parentNameCell = document.createElement('div');
     parentNameCell.classList.add('table-cell');
@@ -86,13 +87,18 @@ function addToFrontera(parent, neighbors) {
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
+        
+        const g = neighbor.g !== Infinity ? neighbor.g : '-';
+        const h = neighbor.h !== Infinity ? neighbor.h : '-';
+        const f = neighbor.f !== Infinity ? neighbor.f : '-';
+
         costCell.innerHTML = `
-            <span> ${neighbor.g} + ${neighbor.h} </span><b>${neighbor.f}</b>
+            <span>g: ${g}, h: ${h}</span><b> f: ${f}</b>
         `;
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');
-        parentNodeCell.innerText = `${parent.x},${parent.y}`;
+        parentNodeCell.innerText = parent ? `${parent.x},${parent.y}` : "-";
 
         const neighborCell = document.createElement('div');
         neighborCell.classList.add('table-cell');
@@ -174,20 +180,20 @@ async function aStarSearch(start, goal) {
 
         let neighbors = getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall);
         for (const neighbor of neighbors) {
-            let tentative_g = current.g + 1;
+            let tentative_g = current.g + 1; // Distancia acumulada
 
             if (!openSet.includes(neighbor)) {
                 openSet.push(neighbor);
                 neighbor.element.classList.add('open');
                 await delay(timeExecute);
             } else if (tentative_g >= neighbor.g) {
-                continue;
+                continue; 
             }
 
             neighbor.g = tentative_g;
-            neighbor.h = heuristic(neighbor, goal);
-            neighbor.f = neighbor.g + neighbor.h;
-            neighbor.parent = current;
+            neighbor.h = heuristic(neighbor, goal); 
+            neighbor.f = neighbor.g + neighbor.h; 
+            neighbor.parent = current; 
             await delay(timeExecute);
         }
     }
@@ -205,7 +211,5 @@ btnEmpezar.addEventListener('click', () => {
 document.querySelector('#reiniciar').addEventListener('click', () => {
     location.reload();
 });
-
-
 
 

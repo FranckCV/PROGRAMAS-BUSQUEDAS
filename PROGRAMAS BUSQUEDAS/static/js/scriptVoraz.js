@@ -62,7 +62,6 @@ const arbol = document.querySelector('#Frontera');
 function addToFrontera(parent, neighbors) {
     const fronteraContainer = document.getElementById('Frontera');
 
-    // Crear la columna para el nodo padre
     const parentColumn = document.createElement('div');
     parentColumn.classList.add('table-column');
 

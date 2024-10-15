@@ -79,7 +79,7 @@ function addToFrontera(parent, neighbors) {
     // Celda de costo del nodo padre
     const parentCostCell = document.createElement('div');
     parentCostCell.classList.add('table-cell');
-    parentCostCell.innerText = parent ? parent.g : 0; // Costo es 0 si no hay padre (nodo inicial)
+    parentCostCell.innerText = parent ? parent.g : 0; // Costo g(n) es 0 si no hay padre (nodo inicial)
 
     // Celda separadora que solo debe ser "-" si el nodo es el inicial
     const separatorCell = document.createElement('div');
@@ -102,10 +102,16 @@ function addToFrontera(parent, neighbors) {
         const neighborColumn = document.createElement('div');
         neighborColumn.classList.add('table-column');
 
-        // Celda de heurística calculada
+        // Calcular el nuevo costo g(n) para el vecino
+        const newGCost = parent.g + neighbor.g; // Sumar el costo del padre y el costo del vecino
+
+        // Asignar el nuevo costo g(n) al vecino
+        neighbor.g = newGCost;
+
+        // Celda de costo acumulado g(n)
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p>h= ${neighbor.h}</p>`;
+        costCell.innerHTML = `<p>g= ${neighbor.g}</p>`;  // Mostrar g(n)
 
         // Celda que indica el nodo padre del vecino
         const parentNodeCell = document.createElement('div');
@@ -128,12 +134,12 @@ function addToFrontera(parent, neighbors) {
 
 function updateNodoActual(current) {
     const nodoElement = document.getElementById('Nodo');
-    nodoElement.innerHTML = `<p>${current.x},${current.y}</p>`; // Muestra el nodo actual
+    nodoElement.innerHTML = `<p>${current.x},${current.y}</p>`; 
 }
 
 function updateExplorados(closedSet) {
     const exploradosElement = document.getElementById('Explorados');
-    exploradosElement.innerHTML = ''; // Limpiar explorados antes de agregar nuevos nodos
+    exploradosElement.innerHTML = ''; 
 
     closedSet.forEach(node => {
         const nodeElement = document.createElement('p');
@@ -167,50 +173,46 @@ async function bestFirstSearch(start, goal) {
     let closedSet = [];
 
     start.g = 0;
-    start.h = heuristic(start, goal); // Inicializar heurística
+    start.h = heuristic(start, goal);
 
     while (openSet.length > 0) {
-        // Selecciona el nodo con el menor valor de h (heurística)
-        let current = openSet.reduce((prev, node) => node.h < prev.h ? node : prev);
+        openSet.sort((a, b) => (a.g + a.h) - (b.g + b.h));
+        let current = openSet[0];
 
-        // Actualiza el nodo actual
         updateNodoActual(current);
-
-        // Añadir nodo actual a la frontera antes de procesarlo
         addToFrontera(current, getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall));
         await delay(50);
 
-        // Si se llega al objetivo, reconstruye el camino
         if (current === goal) {
             reconstructPath(current);
             return;
         }
 
-        // Marcar como cerrado y mostrar en explorados
         openSet = openSet.filter(node => node !== current);
         closedSet.push(current);
         current.element.classList.remove('open');
         current.element.classList.add('closed');
-        updateExplorados(closedSet); // Actualiza la lista de nodos explorados
+        updateExplorados(closedSet);
 
         let neighbors = getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall);
         for (const neighbor of neighbors) {
-            neighbor.h = heuristic(neighbor, goal); // Calcular heurística
+            const tentativeGCost = current.g + neighbor.g;
 
-            // Añadir nodo vecino a openSet si no está ya y actualizar la visualización
-            if (!openSet.includes(neighbor)) {
-                openSet.push(neighbor);
-                neighbor.element.classList.add('open');
-                await delay(50); // Pausa para visualizar el cambio a 'open'
+            if (!openSet.includes(neighbor) || tentativeGCost < neighbor.g) {
+                neighbor.g = tentativeGCost;
+                neighbor.h = heuristic(neighbor, goal); 
+                neighbor.parent = current;
+
+                if (!openSet.includes(neighbor)) {
+                    openSet.push(neighbor);
+                    neighbor.element.classList.add('open');
+                    await delay(50);
+                }
             }
-            neighbor.parent = current;
-
-            // Pausa después de evaluar cada nodo
-            await delay(50);
         }
     }
-    ruta.innerHTML = '<span class="error">No se encontró el objetivo</span>';
 
+    ruta.innerHTML = '<span class="error">No se encontró el objetivo</span>';
 }
 
 createGrid();

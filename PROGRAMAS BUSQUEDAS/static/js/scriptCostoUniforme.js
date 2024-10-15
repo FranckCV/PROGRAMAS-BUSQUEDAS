@@ -164,47 +164,39 @@ async function uniformCostSearch(start, goal) {
     start.g = 0;
 
     while (openSet.length > 0) {
-        // Selecciona el nodo con menor costo acumulado g
         let current = openSet.reduce((prev, node) => node.g < prev.g ? node : prev);
 
-        // Actualiza el nodo actual
         updateNodoActual(current);
 
-        // Añadir nodo actual a la frontera antes de procesarlo
         addToFrontera(current, getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall));
         await delay(50);
 
-        // Si se llega al objetivo, reconstruye el camino
         if (current === goal) {
             reconstructPath(current);
             return;
         }
 
-        // Marcar como cerrado y mostrar en explorados
         openSet = openSet.filter(node => node !== current);
         closedSet.push(current);
         current.element.classList.remove('open');
         current.element.classList.add('closed');
-        updateExplorados(closedSet); // Actualiza la lista de nodos explorados
+        updateExplorados(closedSet); 
 
         let neighbors = getNeighbors(current).filter(neighbor => !closedSet.includes(neighbor) && !neighbor.isWall);
         for (const neighbor of neighbors) {
             let tentative_g = current.g + neighbor.g;
 
-            // Añadir nodo vecino a openSet si no está ya y actualizar la visualización
             if (!openSet.includes(neighbor)) {
                 openSet.push(neighbor);
                 neighbor.element.classList.add('open');
-                await delay(50); // Pausa para visualizar el cambio a 'open'
+                await delay(50);
             } else if (tentative_g >= neighbor.g) {
                 continue;
             }
 
-            // Actualizar nodo si es necesario
             neighbor.g = tentative_g;
             neighbor.parent = current;
 
-            // Pausa después de evaluar cada nodo
             await delay(50);
         }
     }
