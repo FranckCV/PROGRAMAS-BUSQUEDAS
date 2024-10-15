@@ -59,19 +59,6 @@ function createGrid() {
                 cellElement.classList.add('wall');
             }
 
-            // if (
-            //     (i === 0 && j === 2) || 
-            //     (i === 1 && j === 3) || 
-            //     (i === 1 && j === 4) || 
-            //     (i === 3 && j === 0) || 
-            //     (i === 3 && j === 2) || 
-            //     (i === 3 && j === 4) || 
-            //     (i === 4 && j === 2)
-            // ) {
-            //     cell.isWall = true;
-            //     cellElement.classList.add('wall');
-            // }
-
         }
     }
 
@@ -107,7 +94,7 @@ function addToFrontera(parent, neighbors) {
 
     const parentCostCell = document.createElement('div');
     parentCostCell.classList.add('table-cell');
-    parentCostCell.innerText = parent ? parent.g : 0;
+    parentCostCell.innerText = parent ? "-" : 0;
 
     const separatorCell = document.createElement('div');
     separatorCell.classList.add('table-cell');
@@ -130,7 +117,7 @@ function addToFrontera(parent, neighbors) {
 
         const costCell = document.createElement('div');
         costCell.classList.add('table-cell');
-        costCell.innerHTML = `<p><b>${neighbor.g}</b></p>`; // Muestra el costo acumulado
+        costCell.innerHTML = `<p><b>-</b></p>`; // Muestra el costo acumulado
 
         const parentNodeCell = document.createElement('div');
         parentNodeCell.classList.add('table-cell');

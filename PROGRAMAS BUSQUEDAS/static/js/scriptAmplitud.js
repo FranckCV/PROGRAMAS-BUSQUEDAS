@@ -39,6 +39,7 @@ function createGrid() {
                 cell.isWall = true;
                 cellElement.classList.add('wall');
             }
+
         }
     }
 }

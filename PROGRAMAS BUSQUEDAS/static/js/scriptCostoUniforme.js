@@ -41,7 +41,7 @@ function createGrid() {
                 cell.isWall = true;
                 cellElement.classList.add('wall');
             }
-
+            
             if (!cell.isWall && cell !== start && cell !== goal) {
                 cellElement.innerHTML += `<p class="costo">costo= ${cell.g}</p>`;
             }
