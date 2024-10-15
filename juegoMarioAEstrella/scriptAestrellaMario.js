@@ -6,6 +6,7 @@ const timeExecute = 75;
 const nivelDificultad = 20;
 const enemies = ["muro", "hongo", "tortuga"];
 let start, goal;
+const sonido = document.querySelector("#sonido");
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -58,6 +59,9 @@ function createGrid() {
             }
         }
     }
+    sonido.innerHTML = '<source src="yt1s.com - Super Mario Bros Soundtrack.mp3" type="audio/mpeg">';
+    sonido.load();
+    sonido.play();
 }
 
 function getNeighbors(node) {
@@ -137,11 +141,11 @@ function updateExplorados(closedSet) {
     });
 }
 
+
 function reconstructPath(current) {
     let delay = 0;
     const fronteraContainer = document.getElementById('Frontera').children;
 
-    const sonido = document.querySelector("#sonido");
     sonido.innerHTML = '<source src="gangnam style.mp3" type="audio/mpeg">';
     sonido.load();
     sonido.play();
