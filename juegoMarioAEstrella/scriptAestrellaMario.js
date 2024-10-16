@@ -64,7 +64,7 @@ function createGrid() {
             }
         }
     }
-    sonido.innerHTML = '<source src="yt1s.com - Super Mario Bros Soundtrack.mp3" type="audio/mpeg">';
+    sonido.innerHTML = '<source src="aud/yt1s.com - Super Mario Bros Soundtrack.mp3" type="audio/mpeg">';
     sonido.load();
     sonido.play();
 
@@ -140,7 +140,7 @@ function reconstructPath(current) {
     let delay = 0;
     const fronteraContainer = document.getElementById('Frontera').children;
 
-    sonido.innerHTML = '<source src="gangnam style.mp3" type="audio/mpeg">';
+    sonido.innerHTML = '<source src="aud/gangnam style.mp3" type="audio/mpeg">';
     sonido.load();
     sonido.play();
 
@@ -243,7 +243,7 @@ async function aStarSearch(start, goal) {
     }
 
     ruta.innerHTML = '<span>No se encontró el objetivo</span>';
-    sonido.innerHTML = '<source src="loose.mp3" type="audio/mpeg">';
+    sonido.innerHTML = '<source src="aud/loose.mp3" type="audio/mpeg">';
     sonido.load();
     sonido.play();
     document.getElementById("mario_inicial").classList.add('sad_mario');
