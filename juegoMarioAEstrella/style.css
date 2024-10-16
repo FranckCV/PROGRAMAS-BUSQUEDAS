@@ -150,14 +150,12 @@ body {
     scale: 2;
 }
 
-/* .start.path {
-    background-image: url('img/mario-64-gangname-style.gif');
+.sad_mario {
+    background-image: url('img/mario_sad.gif');
     background-size: cover;
     background-size: contain;
-    background-color: #00000000;
-    scale: 2;
-} */
-
+    /* scale: 2; */
+}
 
 /* RUTA */
 

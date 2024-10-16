@@ -1,3 +1,5 @@
+// Definicion de Variables
+
 const cols = 10;
 const rows = 10;
 const sizeCell = 50;
@@ -7,6 +9,8 @@ const nivelDificultad = 20;
 const enemies = ["muro", "hongo", "tortuga"];
 let start, goal;
 const sonido = document.querySelector("#sonido");
+
+// Creacion de Tablero
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -40,6 +44,7 @@ function createGrid() {
             if (i === parseInt((rows - 1)) && j === parseInt((cols - 1)/2)) {
                 start = cell;
                 cellElement.classList.add('start');
+                cellElement.setAttribute("id","mario_inicial")
             } else if (i === 0 && j === parseInt((cols - 1)/2)) {
                 goal = cell;
                 cellElement.classList.add('goal');
@@ -62,19 +67,10 @@ function createGrid() {
     sonido.innerHTML = '<source src="yt1s.com - Super Mario Bros Soundtrack.mp3" type="audio/mpeg">';
     sonido.load();
     sonido.play();
+
 }
 
-function getNeighbors(node) {
-    const neighbors = [];
-    const { x, y } = node;
-
-    if (x > 0) neighbors.push(grid[x - 1][y]); // Arriba
-    if (x < rows - 1) neighbors.push(grid[x + 1][y]); // Abajo
-    if (y > 0) neighbors.push(grid[x][y - 1]); // Izquierda
-    if (y < cols - 1) neighbors.push(grid[x][y + 1]); // Derecha
-
-    return neighbors;
-}
+// Informacion de Recorrido
 
 const ruta = document.querySelector('#Ruta');
 const arbol = document.querySelector('#Frontera');
@@ -124,7 +120,6 @@ function addToFrontera(parent, neighbors) {
     });
 }
 
-
 function updateNodoActual(current) {
     const nodoElement = document.getElementById('Nodo');
     nodoElement.innerHTML = `<p>${current.x},${current.y}</p>`;
@@ -140,7 +135,6 @@ function updateExplorados(closedSet) {
         exploradosElement.appendChild(nodeElement);
     });
 }
-
 
 function reconstructPath(current) {
     let delay = 0;
@@ -178,6 +172,20 @@ function reconstructPath(current) {
     }, delay * 20);
 
     
+}
+
+// Algoritmo A*
+
+function getNeighbors(node) {
+    const neighbors = [];
+    const { x, y } = node;
+
+    if (x > 0) neighbors.push(grid[x - 1][y]); // Arriba
+    if (x < rows - 1) neighbors.push(grid[x + 1][y]); // Abajo
+    if (y > 0) neighbors.push(grid[x][y - 1]); // Izquierda
+    if (y < cols - 1) neighbors.push(grid[x][y + 1]); // Derecha
+
+    return neighbors;
 }
 
 function heuristic(node, goal) {
@@ -235,8 +243,13 @@ async function aStarSearch(start, goal) {
     }
 
     ruta.innerHTML = '<span>No se encontró el objetivo</span>';
-
+    sonido.innerHTML = '<source src="loose.mp3" type="audio/mpeg">';
+    sonido.load();
+    sonido.play();
+    document.getElementById("mario_inicial").classList.add('sad_mario');
 }
+
+// Preparacion del Juego
 
 createGrid();
 
