@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/2d-mario-running.gif" type="image/x-icon">
+    <title>Mario A*</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="body_busqueda">
+        <audio id="sonido" loop>
+            <source src="aud/yt1s.com - Super Mario Bros Soundtrack.mp3" type="audio/mpeg">
+        </audio>
+        <div id="campoGrid">
+            <h4 class="tittle">Juego</h4>
+            <div class="grid" id="grid"></div>
+        </div>
+        <div id="controles">
+            <button id="iniciar">Iniciar</button>
+            <button id="reiniciar">Reiniciar</button>
+        </div>
+        <div id="campoRuta">
+            <h4 class="tittle">Ruta</h4>
+            <div id="ruta">
+            </div>
+        </div>
+        <div id="campoExplorados">
+            <h4 class="tittle">Explorados</h4>
+            <div id="recorridos">
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/a_estrella.js"></script>
+    <script src="js/sistema_experto.js"></script>
+</body>
+</html>
