@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prolog Example with Tau</title>
+</head>
+<body>
+    <h1>Prolog Example with Tau</h1>
+    <button id="run-query">Run Query</button>
+    <div id="output"></div>
+    <script src="tau-prolog.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/tau-prolog@0.2.37/modules/core.min.js"></script> -->
+    <script>
+        const x_start = 2;
+        const y_start = 0;
+
+        const x_enemy = 2;
+        const y_enemy = 8;
+
+        const session = pl.create();
+
+        let directionMessage = ''; 
+
+        
+
+
+        const program = `
+            enPosicion(mario, ${x_start}, ${y_start}).
+            enPosicion(enemy, ${x_enemy}, ${y_enemy}).
+
+            moverIzq :- 
+                enPosicion(mario, Z, X), 
+                enPosicion(enemy, Z, Y), 
+                Y > X, 
+                write('El enemigo debe moverse a la izquierda.'). 
+
+            moverDer :- 
+                enPosicion(mario, Z, X), 
+                enPosicion(enemy, Z, Y), 
+                X > Y,
+                write('El enemigo debe moverse a la derecha.').
+
+            moverArriba :- 
+                enPosicion(mario, X, Y), 
+                enPosicion(enemy, Z, Y), 
+                Z > X, 
+                write('El enemigo debe moverse hacia arriba.').
+
+            moverAbajo :- 
+                enPosicion(mario, X, Y), 
+                enPosicion(enemy, Z, Y), 
+                X > Z,
+                write('El enemigo debe moverse hacia abajo.').
+
+            mover :- 
+                enPosicion(mario, X, Y), 
+                enPosicion(enemy, Z, W), 
+                ( 
+                  ( abs(W - Y) > abs(Z - X) -> (moverIzq ; moverDer)) ; 
+                  ( abs(Z - X) > abs(W - Y) -> (moverArriba ; moverAbajo))
+                ).
+
+        `;
+
+        // Cargar el programa Prolog
+        session.consult(program, {
+            success: function () {
+                console.log("Program loaded successfully.");
+            },
+            error: function (err) {
+                console.log("Error loading the program:", err);
+            }
+        });
+
+        // Ejecutar la consulta cuando se hace clic en el botón
+        document.getElementById("run-query").addEventListener("click", function() {
+            const query = `
+              mover.
+            `; 
+            console.log("Running query:", query);  // Mostrar la consulta en consola
+
+            session.query(query, {
+                success: function () {
+                    console.log("Query executed successfully.");
+                    session.answer({
+                        success: function (answer) {
+                            console.log("Answer received:", answer);  // Mostrar la respuesta en consola
+
+                            console.log("Dirección de movimiento:", mensajeExternoTextoProlog); 
+                            
+
+                            const output = document.getElementById("output");
+                            // directionMessage = answer ? answer.attrs[0] : "No hay respuesta"; 
+                            // console.log("mensaje:",directionMessage);
+
+                            if (answer) {
+                                output.innerHTML = "true";
+                            } else {
+                                console.log("No answer found for the query.");
+                                output.innerHTML = "false";  // Si no hay respuesta, mostrar "false"
+                            }
+                        },
+                        fail: function (fail) {
+                            console.log("Query failed:", fail);  // Mostrar mensaje de fallo
+                            const output = document.getElementById("output");
+                            output.innerHTML = "false";  // En caso de fallo, mostrar "false"
+                        },
+                        error: function (err) {
+                            console.error("Error getting the answer:", err);  // Mostrar error al obtener la respuesta
+                            const output = document.getElementById("output");
+                            output.innerHTML = "false";  // En caso de error, mostrar "false"
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.error("Error running the query:", err);  // Mostrar error al ejecutar la consulta
+                    const output = document.getElementById("output");
+                    output.innerHTML = "false";  // En caso de error, mostrar "false"
+                }
+                
+            });
+            // session.set_output(function(output) {
+            //     directionMessage = output; 
+            // });
+
+        });
+    </script>
+</body>
+</html>

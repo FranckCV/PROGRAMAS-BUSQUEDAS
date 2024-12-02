@@ -1,72 +1,28 @@
-// async function moveEnemyExpert() {
-//     while (true) {
-//         const dx = mario.x - enemy.x;
-//         const dy = mario.y - enemy.y;
-
-//         let nextMove = null;
-
-//         if (dx === 0 && dy !== 0) {
-//             nextMove = dy > 0 ? grid[enemy.x][enemy.y + 1] : grid[enemy.x][enemy.y - 1];
-//         } else if (dy === 0 && dx !== 0) {
-//             nextMove = dx > 0 ? grid[enemy.x + 1][enemy.y] : grid[enemy.x - 1][enemy.y];
-//         } else if (Math.abs(dx) > Math.abs(dy)) {
-//             nextMove = dx > 0 ? grid[enemy.x + 1][enemy.y] : grid[enemy.x - 1][enemy.y];
-//         } else {
-//             nextMove = dy > 0 ? grid[enemy.x][enemy.y + 1] : grid[enemy.x][enemy.y - 1];
-//         }
-
-//         if (nextMove && !nextMove.isWall && nextMove !== mario) {
-//             enemy.element.classList.remove('enemy');
-//             enemy = nextMove;
-//             enemy.element.classList.add('enemy');
-//             enemy.element.classList.add('follow');
-//         }
-
-//         await new Promise(resolve => setTimeout(resolve, timeExecute));
-//     }
-// }
-
-
-
-// document.querySelector('#iniciar').addEventListener('click', async () => {
-//     mario = start;
-//     moveEnemyExpert();
-
-//     const path = await aStar(start, goal);
-
-//     if (path) {
-//         console.log("Mario llegó al objetivo.");
-//     } else {
-//         console.warn("Mario no encontró una ruta válida.");
-//     }
-
-// });
-
-// document.querySelector('#reiniciar').addEventListener('click', () => {
-//     location.reload();
-// });
-
-// createGrid();
-
-
-
-
-
 const x_start = 9;
-const y_start = 5;
+const y_start = 9;
 
-const x_goal = 0;
+const x_goal = 5;
 const y_goal = 5;
 
-const x_enemy = 0;
+const x_enemy = 9;
 const y_enemy = 0;
 
-const cols = 10, rows = 10, sizeCell = 50, timeExecute = 200;
+const cols = 10, rows = 10, sizeCell = 50, timeExecute = 500 , timeMsg = 250;
 const nivelDificultad = 0;
+
+
 const grid = [];
 const walls = ["muro"];
 let start, goal, mario, enemy;
-let isGameOver = false; // Nueva variable para controlar el estado del juego
+let isGameOver = false; 
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 function createGrid() {
     const gridElement = document.getElementById('grid');
@@ -93,12 +49,15 @@ function createGrid() {
             grid[i][j] = cell;
             cellElement.innerHTML = `<span>${i},${j}</span>`;
 
-            if (i === parseInt((rows - 1)) && j === parseInt((cols - 1) / 2)) {
+            if (i === x_start && j === y_start) {
                 start = cell;
                 cellElement.classList.add('start');
-            } else if (i === 0 && j === 9) {
+            } else if (i === x_goal && j === y_goal) {
                 goal = cell;
                 cellElement.classList.add('goal');
+            } else if (i === x_enemy && j === y_enemy) {
+                enemy = cell;
+                cellElement.classList.add('enemy');
             }
 
             if ((i % 2 == 0 && j % 2 != 0) || (j % 2 == 0 && i % 2 != 0)) {
@@ -107,7 +66,7 @@ function createGrid() {
                 cellElement.classList.add("cell_2");
             }
 
-            if (Math.random() < nivelDificultad / 100 && cell !== start && cell !== goal) {
+            if (Math.random() < nivelDificultad / 100 && cell !== start && cell !== goal && cell !== enemy) {
                 cell.isWall = true;
                 cellElement.classList.add('wall');
                 const randomWall = getRandomInt(walls.length);
@@ -117,7 +76,6 @@ function createGrid() {
     }
 
     mario = start;
-    placeEnemy();
 }
 
 function getNeighbors(node) {
@@ -181,60 +139,139 @@ function reconstructPath(node) {
 }
 
 async function moveMario(path) {
+    const rutaContainer = document.getElementById('ruta'); 
+
     for (const cell of path) {
-        if (isGameOver) return; // Detener si el enemigo captura a Mario
+        if (isGameOver) return; 
         mario.element.classList.remove('start');
         mario = cell;
         mario.element.classList.add('start');
         mario.element.classList.add('path');
+
+        const nodeInfo = document.createElement('p');
+        nodeInfo.textContent = `(${mario.x}, ${mario.y})`;
+        nodeInfo.classList.add('cell');
+        rutaContainer.appendChild(nodeInfo);
+
+        rutaContainer.scrollTop = rutaContainer.scrollHeight;
+
+        if (mario === goal) {
+            isGameOver = true;
+            console.log("¡Mario llegó al objetivo!");
+            enemy.element.classList.remove('follow');
+            enemy.element.classList.add('lose_enemy');
+            logFinalMessage("¡Mario alcanzó el objetivo!");
+            return;
+        }
+
+        if (checkIfCrossed()) {
+            isGameOver = true;
+            await delay(timeMsg);
+            alert("¡Mario fue capturado por el enemigo!");
+            logFinalMessage("¡El enemigo capturó a Mario!");
+            return;
+        }
+
         await new Promise(resolve => setTimeout(resolve, timeExecute));
     }
 }
 
-function placeEnemy() {
-    let enemyCell;
-    do {
-        const x = getRandomInt(rows);
-        const y = getRandomInt(cols);
-        enemyCell = grid[x][y];
-    } while (enemyCell.isWall || enemyCell === start || enemyCell === goal);
+function checkIfCrossed() {
+    const marioFuture = { x: mario.x, y: mario.y };
+    const enemyFuture = { x: enemy.x, y: enemy.y };
 
-    enemy = enemyCell;
-    enemy.element.classList.add('enemy');
+    if (marioFuture.x === enemy.x && marioFuture.y === enemy.y) {
+        return true;
+    }
+
+    return false;
 }
 
 async function moveEnemyExpert() {
-    while (!isGameOver) { // Detener el movimiento del enemigo si el juego termina
+    while (!isGameOver) {
+        let nextMove = null;
+
+        // Regla 1: Determinar la dirección directa hacia Mario
         const dx = mario.x - enemy.x;
         const dy = mario.y - enemy.y;
 
-        let nextMove = null;
-
         if (dx === 0 && dy !== 0) {
             nextMove = dy > 0 ? grid[enemy.x][enemy.y + 1] : grid[enemy.x][enemy.y - 1];
+            logAction(`Mario está en la misma fila. El enemigo se mueve hacia ${dy > 0 ? 'derecha' : 'izquierda'}.`);
         } else if (dy === 0 && dx !== 0) {
             nextMove = dx > 0 ? grid[enemy.x + 1][enemy.y] : grid[enemy.x - 1][enemy.y];
+            logAction(`Mario está en la misma columna. El enemigo se mueve hacia ${dx > 0 ? 'abajo' : 'arriba'}.`);
         } else if (Math.abs(dx) > Math.abs(dy)) {
             nextMove = dx > 0 ? grid[enemy.x + 1][enemy.y] : grid[enemy.x - 1][enemy.y];
+            logAction(`Mario está más lejos horizontalmente. El enemigo se mueve hacia ${dx > 0 ? 'abajo' : 'arriba'}.`);
         } else {
             nextMove = dy > 0 ? grid[enemy.x][enemy.y + 1] : grid[enemy.x][enemy.y - 1];
+            logAction(`Mario está más lejos verticalmente. El enemigo se mueve hacia ${dy > 0 ? 'derecha' : 'izquierda'}.`);
         }
 
+        // Regla 2: Verificar si la celda elegida es válida (no es un muro)
         if (nextMove && !nextMove.isWall) {
             enemy.element.classList.remove('enemy');
             enemy = nextMove;
             enemy.element.classList.add('enemy');
             enemy.element.classList.add('follow');
+        } else {
+            logAction("El enemigo encontró un muro y busca una alternativa.");
+            const neighbors = getNeighbors(enemy);
+            let bestCell = null;
+            let shortestDistance = Infinity;
 
-            if (enemy === mario) {
-                isGameOver = true;
-                alert("¡Mario fue capturado por el enemigo!");
-                return;
+            for (const neighbor of neighbors) {
+                if (!neighbor.isWall) {
+                    const distanceToMario = heuristic(neighbor, mario); // Calcular distancia heurística a Mario
+                    if (distanceToMario < shortestDistance) {
+                        shortestDistance = distanceToMario;
+                        bestCell = neighbor;
+                    }
+                }
             }
+
+            if (bestCell) {
+                logAction(`El enemigo encontró una ruta alternativa y se mueve.`);
+                enemy.element.classList.remove('enemy');
+                enemy = bestCell;
+                enemy.element.classList.add('enemy');
+                enemy.element.classList.add('follow');
+            } else {
+                logAction("El enemigo no encontró un movimiento válido.");
+            }
+        }
+
+        // Regla 4: Verificar si el enemigo atrapó o cruzó a Mario
+        if (enemy === mario || checkIfCrossed()) {
+            isGameOver = true;
+            logAction("¡Mario fue capturado por el enemigo!");
+            await delay(timeMsg);
+            alert("¡Mario fue capturado por el enemigo!");
+            logFinalMessage("¡El enemigo capturó a Mario!");
+            return;
         }
 
         await new Promise(resolve => setTimeout(resolve, timeExecute));
     }
+}
+
+function logFinalMessage(message) {
+    const logContainer = document.getElementById('acciones');
+    const logEntry = document.createElement('p');
+    logEntry.textContent = message;
+    logContainer.appendChild(logEntry);
+
+    logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+function logAction(message) {
+    const logContainer = document.getElementById('acciones');
+    const logEntry = document.createElement('p');
+    logEntry.textContent = message;
+    logContainer.appendChild(logEntry);
+
+    logContainer.scrollTop = logContainer.scrollHeight;
 }
 
 document.querySelector('#iniciar').addEventListener('click', async () => {
@@ -255,7 +292,3 @@ document.querySelector('#reiniciar').addEventListener('click', () => {
 });
 
 createGrid();
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
