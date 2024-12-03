@@ -102,14 +102,13 @@ function reconstructPath(node) {
 }
 
 function heuristic(a, b) {
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); // Distancia Manhattan
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); 
 }
 
 function getNeighbors(node) {
     const { x, y } = node;
     const neighbors = [];
 
-    // Revisar las celdas vecinas, excluyendo las que están fuera del mapa
     if (x > 0 && !grid[x - 1][y].isWall && !grid[x - 1][y].isEnemy) neighbors.push(grid[x - 1][y]);
     if (x < rows - 1 && !grid[x + 1][y].isWall && !grid[x + 1][y].isEnemy) neighbors.push(grid[x + 1][y]);
     if (y > 0 && !grid[x][y - 1].isWall && !grid[x][y - 1].isEnemy) neighbors.push(grid[x][y - 1]);
@@ -153,15 +152,14 @@ function aStar(start, goal) {
         }
     }
 
-    // console.warn("No se encontró una ruta válida.");
     mario.element.classList.add("sad_mario");
     enemy.element.classList.add("happy_enemy");
     isGameOver = true;
+    logFinalAction("FIN. NO HUBO RUTA POSIBLE PARA MARIO");
     return null;
 }
 
 async function moveMario(path) {
-    // Función que mueve a Mario en el camino determinado por A*
     const rutaContainer = document.getElementById('ruta');
     for (const cell of path) {
         if (isGameOver) return;
@@ -179,16 +177,15 @@ async function moveMario(path) {
 
         if (mario === goal) {
             isGameOver = true;
-            // console.log("¡Mario llegó al objetivo!");
             enemy.element.classList.add('lose_enemy');
-
+            logFinalAction("FIN. MARIO GANÓ");
             return;
         }
 
         if (checkIfCrossed()) {
+            logAction(mensajeDirection);
+            logFinalAction("FIN. EL ENEMIGO GANÓ");
             isGameOver = true;
-
-            // alert("¡El enemigo ha atrapado a Mario!");
             return;
         }
 
@@ -197,19 +194,6 @@ async function moveMario(path) {
 }
 
 // SISTEMA EXPERTO
-
-function agregarConsola(mensajeTexto) {
-    const consola = document.getElementById('consola');
-    consola.innerHTML += `<p>${mensajeTexto}</p>`;
-    consola.scrollTop = consola.scrollHeight;
-}
-
-function agregarOutput(mensajeTexto) {
-    const output = document.getElementById('output');
-    output.innerHTML += `<p>${mensajeTexto}</p>`;
-    output.scrollTop = output.scrollHeight; 
-}
-
 
 var hechosMuros = '';
 
@@ -235,10 +219,10 @@ const session = pl.create();
 function consultaProlog(posXstart , posYstart , posXenemy , posYenemy) {
     hechosMuros = '';
     agregarMuroshechos();
-    var hechos = `
+    var hechos = hechosMuros + `
         enPosicion(mario, ${posXstart}, ${posYstart}).
         enPosicion(enemy, ${posXenemy}, ${posYenemy}).
-    ` + hechosMuros
+    ` 
     ;
     const campoHechos = document.getElementById('hechos');
     campoHechos.innerHTML = `<p>${hechos}</p>`;
@@ -307,7 +291,8 @@ function consultaProlog(posXstart , posYstart , posXenemy , posYenemy) {
             (
                 Z =:= X -> moverFila ;
                 Y =:= W -> moverColumna ;
-                moverDistancia
+                moverDistancia;
+                (moverAbajo ; moverIzq ; moverArriba ; moverDer)
             ).
 
     `;
@@ -357,7 +342,7 @@ function consultaProlog(posXstart , posYstart , posXenemy , posYenemy) {
     });
 
     mensajeDirection = mensajeExternoTextoProlog;
-    // console.log(hechos);
+    agregarOutput("--------------------------------");
     agregarOutput(mensajeExternoTextoProlog);
 }
 
@@ -380,16 +365,16 @@ async function moveEnemyExpert() {
 
         switch (direction) {
             case direcciones[0]:
-                nextMove = grid[enemy.x][enemy.y - 1];  // Mover a la izquierda
+                nextMove = grid[enemy.x][enemy.y - 1];  
                 break;
             case direcciones[1]:
-                nextMove = grid[enemy.x][enemy.y + 1];  // Mover a la derecha
+                nextMove = grid[enemy.x][enemy.y + 1]; 
                 break;
             case direcciones[2]:
-                nextMove = grid[enemy.x - 1][enemy.y];  // Mover hacia arriba
+                nextMove = grid[enemy.x - 1][enemy.y]; 
                 break;
             case direcciones[3]:
-                nextMove = grid[enemy.x + 1][enemy.y];  // Mover hacia abajo
+                nextMove = grid[enemy.x + 1][enemy.y];  
                 break;
             default:
                 console.log('Dirección desconocida - ', direction);
@@ -404,33 +389,12 @@ async function moveEnemyExpert() {
             enemy.element.classList.add('enemy');
             enemy.element.classList.add('follow');
         } 
-        // else {
-        //     const neighbors = getNeighbors(enemy);
-        //     let bestCell = null;
-        //     let shortestDistance = Infinity;
-
-        //     for (const neighbor of neighbors) {
-        //         if (!neighbor.isWall) {
-        //             const distanceToMario = heuristic(neighbor, mario); 
-        //             if (distanceToMario < shortestDistance) {
-        //                 shortestDistance = distanceToMario;
-        //                 bestCell = neighbor;
-        //             }
-        //         }
-        //     }
-
-        //     if (bestCell) {
-        //         enemy.element.classList.remove('enemy');
-        //         enemy = bestCell;
-        //         enemy.element.classList.add('enemy');
-        //         enemy.element.classList.add('follow');
-        //     } else {
-        //     }
-        // }
-
+        
         if (enemy === mario || checkIfCrossed()) {
             isGameOver = true;
-            await delay(timeMsg);
+            logAction(direction);
+            await delay(timeMsg);            
+            logFinalAction("FIN. EL ENEMIGO GANÓ");
             return;
         }
 
@@ -438,13 +402,46 @@ async function moveEnemyExpert() {
     }
 }
 
+// MENSAJES
+
+function agregarConsola(mensajeTexto) {
+    const consola = document.getElementById('consola');
+    consola.innerHTML += `<p>${mensajeTexto}</p>`;
+    consola.innerHTML += `<p>--------------------</p>`;
+    consola.scrollTop = consola.scrollHeight;
+}
+
+function agregarOutput(mensajeTexto) {
+    const output = document.getElementById('output');
+    output.innerHTML += `<p>${mensajeTexto}</p>`;
+    // output.innerHTML += `<p>--------------------</p>`;
+    output.scrollTop = output.scrollHeight; 
+}
+
 function logAction(message) {
     const actionsContainer = document.getElementById('acciones');
     const actionElement = document.createElement('p');
-    actionElement.textContent = "Da un paso en dirección "+message;
+    if (mario.x === enemy.x && mario.y === enemy.y) {
+        actionElement.textContent = `
+            Mario (${mario.x},${mario.y}) y Enemigo (${enemy.x},${enemy.y}) se encuentran.
+        `;
+    } else {
+        actionElement.textContent = `
+            Mario en (${mario.x},${mario.y}).
+            Enemigo (${enemy.x},${enemy.y}) da un paso en dirección ${message}.
+        `;
+    }
     actionsContainer.appendChild(actionElement);
+    actionsContainer.scrollTop = actionsContainer.scrollHeight; 
 }
 
+function logFinalAction(message) {
+    const actionsContainer = document.getElementById('acciones');
+    const actionElement = document.createElement('p');
+    actionElement.textContent = message;
+    actionsContainer.appendChild(actionElement);
+    actionsContainer.scrollTop = actionsContainer.scrollHeight;
+}
 
 // INIALIZACION DEL SISTEMA
 
@@ -456,9 +453,8 @@ document.querySelector('#iniciar').addEventListener('click', async () => {
 
     if (path && !isGameOver) {
         console.log("Mario llegó al objetivo.");
-        // enemy.element.classList.add('enemy_sad');
     } else if (!isGameOver) {
-        console.warn("Mario no encontró una ruta válida.");
+        logFinalAction("FIN. NO HUBO RUTA POSIBLE PARA MARIO");
     }
 });
 

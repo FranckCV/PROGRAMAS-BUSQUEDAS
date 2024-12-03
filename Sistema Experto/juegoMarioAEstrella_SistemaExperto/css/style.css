@@ -68,7 +68,8 @@ body {
     flex-direction: column;
     z-index: 1;
     background-size: cover;
-    color: #000000c4;
+    color: #000000;
+    border-radius: 10px;
 }
 
 .cell_1 {
